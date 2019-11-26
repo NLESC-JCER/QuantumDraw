@@ -24,7 +24,7 @@ class RBF(nn.Module):
             opt_sigma : optmize the std or not
         '''
 
-        super(RBF_Gaussian,self).__init__()
+        super(RBF,self).__init__()
 
         # register dimension
         self.input_features = input_features

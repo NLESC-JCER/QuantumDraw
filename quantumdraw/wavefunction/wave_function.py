@@ -16,7 +16,7 @@ class WaveFunction(nn.Module):
         self.ndim = ndim
         self.nelec = nelec
         self.ndim_tot = self.nelec*self.ndim
-        self.kinetic = kinetic
+        
 
         # get the RBF centers 
         if not isinstance(ncenter,list):
