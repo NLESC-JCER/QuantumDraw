@@ -13,7 +13,7 @@ from quantumdraw.solver.torch_utils import DataSet, Loss, ZeroOneClipper
 from tqdm import tqdm
 import time
 
-class SolverBase(object):
+class Solver(object):
 
     def __init__(self,wf=None, sampler=None, optimizer=None,scheduler=None):
 
