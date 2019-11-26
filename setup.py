@@ -17,7 +17,7 @@ with open('README.md') as readme_file:
 setup(
     name='quantumdraw',
     version=version['__version__'],
-    description="Are you better than a neural network at quantum mechanics ?",
+    description="Can you beat a neural network at quantum mechanics ?",
     long_description=readme + '\n\n',
     long_description_content_type='text/markdown',
     author=["Nicolas Renaud", "Felipe Zapata"],

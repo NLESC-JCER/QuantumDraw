@@ -9,12 +9,11 @@ from quantumdraw.wavefunction.rbf import RBF
 
 class WaveFunction(nn.Module):
 
-    def __init__(self,fpot,domain,ncenter,nelec=1,ndim=1,fcinit=0.1,sigma=1.):
+    def __init__(self,fpot,domain,ncenter,fcinit=0.1,sigma=1.):
         super(WaveFunction,self).__init__()
 
-
-        self.ndim = ndim
-        self.nelec = nelec
+        self.ndim = 1
+        self.nelec = 1
         self.ndim_tot = self.nelec*self.ndim
         
 
