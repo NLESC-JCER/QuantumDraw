@@ -2,7 +2,7 @@ import torch
 from torch import optim
 
 from quantumdraw.sampler.metropolis import  Metropolis
-from quantumdraw.wavefunction.wave_function import WaveFunction
+from quantumdraw.wavefunction.neural_wave_function import NeuralWaveFunction
 from quantumdraw.solver.solver import Solver
 from quantumdraw.solver.plot_utils import plot_results_1d, plotter1d
 
@@ -18,7 +18,7 @@ def ho1d_sol(pos):
 domain, ncenter = {'xmin':-5.,'xmax':5.}, 11
 
 # wavefunction
-wf = WaveFunction(pot_func,domain,ncenter,fcinit='random',nelec=1,sigma=0.5)
+wf = NeuralWaveFunction(pot_func,domain,ncenter,fcinit='random',sigma=0.5)
 
 #sampler
 sampler = Metropolis(nwalkers=1000, nstep=2000, 
@@ -34,7 +34,7 @@ scheduler = optim.lr_scheduler.StepLR(opt,step_size=100,gamma=0.75)
 solver = Solver(wf=wf,sampler=sampler,optimizer=opt,scheduler=scheduler)
 
 # train the wave function
-plotter = plotter1d(wf,domain,100,sol=ho1d_sol,save='./image/')
+plotter = plotter1d(wf,domain,100,sol=ho1d_sol)#,save='./image/')
 solver.run(300,loss = 'variance', plot = plotter,save='model.pth' )
 
 # plot the final wave function 
