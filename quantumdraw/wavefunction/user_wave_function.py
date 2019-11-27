@@ -12,6 +12,9 @@ class UserWaveFunction(WaveFunction):
         self.load_data(xpts,ypts)
         self.get_interp()
 
+    def __call__(self,pos):
+        return self.forward(pos)
+
     def get_interp(self):
         """Creates a function that interpolate the data points.
         """

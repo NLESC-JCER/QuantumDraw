@@ -8,14 +8,14 @@ class Metropolis(object):
     def __init__(self, nwalkers=1000, nstep=1000,
                  step_size = 3, domain = {'min':-2,'max':2}):
 
-        ''' METROPOLIS HASTING SAMPLER
+        """Metropolis hasting sampling.
+
         Args:
-            f (func) : function to sample
-            nstep (int) : number of mc step
             nwalkers (int) : number of walkers
-            eps (float) : size of the mc step
-            boudnary (float) : boudnary of the space
-        '''
+            nstep (int) : number of mc step
+            step_size (float) : size of the mc step
+            domain (dict) : boundary of the space
+        """
 
         self.nwalkers = nwalkers
         self.nstep = nstep
@@ -26,18 +26,21 @@ class Metropolis(object):
         
         self.walkers = Walkers(nwalkers,self.nelec,self.ndim,domain)
 
-    def set_ndim(self,ndim):
-        self.ndim = ndim
-
-    def set_initial_guess(self,guess):
-        self.initial_guess = guess
-
     def generate(self,pdf,ntherm=10,with_tqdm=True,pos=None,init='uniform'):
 
-        ''' perform a MC sampling of the function f
+
+        """Generates a series of point sampling the function pdf
+        
+        Args :
+            pdf (function) : pdf of the function to sample
+            ntherm (int) : number of step to skip
+            with_tqdm (bool) : use tqdm progess bar
+            pos (torch.tensor) : starting position of the walkers
+            init (str) : method to initialize the walkers
+
         Returns:
             X (list) : position of the walkers
-        '''
+        """
         with torch.no_grad():
             
             if ntherm < 0:

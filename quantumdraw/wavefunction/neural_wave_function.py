@@ -7,7 +7,6 @@ from torch.autograd import grad, Variable
 from quantumdraw.wavefunction.wave_function_base import WaveFunction
 from quantumdraw.wavefunction.rbf import RBF
 
-
 class NeuralWaveFunction(nn.Module,WaveFunction):
 
     def __init__(self,fpot,domain,ncenter,fcinit=0.1,sigma=1.):
