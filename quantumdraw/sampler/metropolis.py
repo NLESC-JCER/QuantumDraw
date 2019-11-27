@@ -93,6 +93,6 @@ class Metropolis(object):
         ones = torch.ones(self.nwalkers)
         P[P>1]=1.0
         tau = torch.rand(self.nwalkers).double()
-        index = (P-tau>=0).reshape(-1)
+        index = (P-tau>0).reshape(-1)
         return index.type(torch.bool)
 

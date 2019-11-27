@@ -35,7 +35,10 @@ class Walkers(object):
         self.status = torch.ones((self.nwalkers,1))
 
     def move(self,step_size):
-        return self.pos + self.status * self._random(step_size,(self.nwalkers,self.nelec * self.ndim))
+        new_pos = self.pos + self.status * self._random(step_size,(self.nwalkers,self.nelec * self.ndim))
+        new_pos[new_pos<self.domain['xmin']] = self.domain['xmin']
+        new_pos[new_pos>self.domain['xmax']] = self.domain['xmax']
+        return new_pos
 
     def _random(self,step_size,size):
         return step_size * (2 * torch.rand(size) - 1)

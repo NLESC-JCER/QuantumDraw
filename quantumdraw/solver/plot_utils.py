@@ -133,7 +133,7 @@ class plotter1d(object):
         plt.savefig(fname)
         self.iter += 1
 
-def plot_wf_1d(net,domain,res,grad=False,hist=False,pot=True,sol=None,ax=None,load=None):
+def plot_wf_1d(net,domain,res,grad=False,hist=False,pot=True,sol=None,ax=None,load=None,feedback=None):
         '''Plot a 1D wave function.
 
         Args:
@@ -164,9 +164,12 @@ def plot_wf_1d(net,domain,res,grad=False,hist=False,pot=True,sol=None,ax=None,lo
             vs = sol(X).detach().numpy()
             ax.plot(xn,vs,color='#b70000',linewidth=4,linestyle='--',label='solution')
 
+        if isinstance(sol,dict):
+            ax.plot(sol['x'],sol['y'],color='#b70000',linewidth=4,linestyle='--',label='solution')
+
         vals = net.wf(X)
         vn = vals.detach().numpy().flatten()
-        vn /= np.max(vn)
+        #vn /= np.max(vn)
         ax.plot(xn,vn,color='black',linewidth=2,label='DeepQMC')
 
         if pot:
@@ -184,7 +187,15 @@ def plot_wf_1d(net,domain,res,grad=False,hist=False,pot=True,sol=None,ax=None,lo
             pos = net.sample(ntherm=-1)
             ax.hist(pos.detach().numpy(),density=False)
         
-        ax.set_ylim((np.min(pot),1))
+        if feedback is not None:
+            x = feedback['x']
+            y1 = feedback['y']
+            y2 = feedback['y']+feedback['delta']
+            ax.fill_between(x,y1,y2,where=y2>y1,facecolor="#5286c7")
+            ax.fill_between(x,y1,y2,where=y1>y2,facecolor="#8e1796")
+
+        #ax.set_ylim((np.min(pot),1))
+        ax.set_ylim((-1,2))
         ax.grid()
         ax.set_xlabel('X')
         if load is None:
