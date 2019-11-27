@@ -28,7 +28,8 @@ class NeuralWaveFunction(nn.Module,WaveFunction):
 
         # define the RBF layer
         self.rbf = RBF(self.ndim_tot, self.ncenter,
-                      centers=self.centers, sigma = sigma,
+                      centers=self.centers, 
+                      sigma = sigma,
                       opt_centers=True,
                       opt_sigma = True)
         
@@ -39,8 +40,10 @@ class NeuralWaveFunction(nn.Module,WaveFunction):
         # initiaize the fc layer
         if fcinit == 'random':
             nn.init.uniform_(self.fc.weight,0,1)
+
         elif isinstance(fcinit,float):  
             self.fc.weight.data.fill_(fcinit)
+            self.fc.weight.data[0][int(self.ncenter/2)]=1.
 
     def forward(self,x):
         ''' Compute the value of the wave function.
@@ -66,6 +69,11 @@ class NeuralWaveFunction(nn.Module,WaveFunction):
         return self.user_potential(pos).flatten().view(-1,1)
 
     def kinetic_energy(self,pos,out=None):
+        x = self.rbf(pos,der=2)
+        x = self.fc(x)
+        return -0.5*x.view(-1,1)
+
+    def kinetic_energy_autograd(self,pos,out=None):
         '''Compute the second derivative of the network
         output w.r.t the value of the input. 
 
@@ -111,7 +119,6 @@ class NeuralWaveFunction(nn.Module,WaveFunction):
         
         wf = self.forward(pos)
         ke = self.kinetic_energy(pos,out=wf)
-        
         return ke/wf + self.nuclear_potential(pos)
 
     def energy(self,pos):

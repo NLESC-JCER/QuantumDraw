@@ -31,7 +31,7 @@ class Walkers(object):
                 self.pos = torch.rand(self.nwalkers, self.nelec*self.ndim) 
                 self.pos *= (self.domain['xmax'] - self.domain['xmin'])
                 self.pos += self.domain['xmin']
-                print(self.pos.min(),self.pos.max() )
+                
         self.status = torch.ones((self.nwalkers,1))
 
     def move(self,step_size):

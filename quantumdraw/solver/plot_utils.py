@@ -169,7 +169,6 @@ def plot_wf_1d(net,domain,res,grad=False,hist=False,pot=True,sol=None,ax=None,lo
 
         vals = net.wf(X)
         vn = vals.detach().numpy().flatten()
-        #vn /= np.max(vn)
         ax.plot(xn,vn,color='black',linewidth=2,label='DeepQMC')
 
         if pot:
@@ -194,15 +193,15 @@ def plot_wf_1d(net,domain,res,grad=False,hist=False,pot=True,sol=None,ax=None,lo
             ax.fill_between(x,y1,y2,where=y2>y1,facecolor="#5286c7")
             ax.fill_between(x,y1,y2,where=y1>y2,facecolor="#8e1796")
 
-        #ax.set_ylim((np.min(pot),1))
-        ax.set_ylim((-1,2))
+        
+        ax.set_ylim((-0.1,2.5))
         ax.grid()
         ax.set_xlabel('X')
         if load is None:
             ax.set_ylabel('Wavefuntion')
         else:
             ax.set_ylabel('Wavefuntion %d epoch' %epoch)
-        ax.legend()
+        #ax.legend()
 
         if show_plot:
             plt.show()

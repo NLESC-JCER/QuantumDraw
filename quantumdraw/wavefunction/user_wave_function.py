@@ -44,8 +44,6 @@ class UserWaveFunction(WaveFunction):
         x = np.insert(x,len(x),1.25*self.domain['xmax'])
         y = np.insert(y,len(y),0)
 
-        print(np.min(x),np.max(x))
-
         self.data = {'x':[],'y':[]}
         self.data['x'] = x
         self.data['y'] = y

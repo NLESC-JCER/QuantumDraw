@@ -11,7 +11,7 @@ class RBF(nn.Module):
                 centers,
                 opt_centers=True,
                 sigma = 1.0,
-                opt_sigma= False ):
+                opt_sigma= True):
 
         '''Radial Basis Function Layer in N dimension
 
@@ -40,7 +40,7 @@ class RBF(nn.Module):
         self.sigma = nn.Parameter(sigma*torch.ones(self.ncenter))
         self.sigma.requires_grad = opt_sigma
         
-    def forward(self,input):
+    def forward(self,input,der=0):
         '''Compute the output of the RBF layer'''
 
         # get the distancese of each point to each RBF center
@@ -50,11 +50,11 @@ class RBF(nn.Module):
         # Compute (INPUT-MU).T x Sigma^-1 * (INPUT-MU)-> (Nbatch,Nrbf)
         X = ( delta**2 ).sum(2)
 
-        # divide by the determinant of the cov mat
-        X = torch.exp(-X/self.sigma)
+        if der == 0:
+            # divide by the determinant of the cov mat
+            X = torch.exp(-X/self.sigma)
+    
+        elif der == 2 :
+            X = (4*X/self.sigma**2-2./self.sigma) * torch.exp(-X/self.sigma)
 
         return X.view(-1,self.ncenter)
-
-
-
-
