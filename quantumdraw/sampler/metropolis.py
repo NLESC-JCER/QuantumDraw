@@ -26,7 +26,7 @@ class Metropolis(object):
         
         self.walkers = Walkers(nwalkers,self.nelec,self.ndim,domain)
 
-    def generate(self,pdf,ntherm=10,with_tqdm=True,pos=None,init='uniform'):
+    def generate(self,pdf,ntherm=10,with_tqdm=True,pos=None,init='center'):
 
 
         """Generates a series of point sampling the function pdf
@@ -48,7 +48,6 @@ class Metropolis(object):
 
             self.walkers.initialize(method=init,pos=pos)
 
-            #fx = pdf(torch.tensor(self.walkers.pos).float())
             fx = pdf(self.walkers.pos)
             fx[fx==0] = 1E-6
             POS = []
@@ -62,7 +61,6 @@ class Metropolis(object):
             for istep in rng:
 
                 # new positions
-                #Xn = torch.tensor(self.walkers.move(self.step_size,method=self.move)).float()
                 Xn = self.walkers.move(self.step_size)
 
                 # new function

@@ -28,21 +28,19 @@ ypts = ho1d_sol(xpts).detach().numpy()
 xpts = xpts.detach().numpy()
 uwf = UserWaveFunction(pot_func,domain,xpts=xpts,ypts=ypts)
 
-# wavefunction
-#wf = NeuralWaveFunction(pot_func,domain,ncenter,fcinit='random',sigma=0.5)
-
 #sampler
-sampler = Metropolis(nwalkers=1000, nstep=2000, 
+sampler = Metropolis(nwalkers=100, nstep=100, 
                      step_size = 0.5, domain = domain)
 
 usolver = UserSolver(wf=uwf,sampler=sampler)
 plot_wf_1d(usolver,domain,51,grad=False,sol=None,feedback=usolver.feedback())
-#pos,e,v = usolver.single_point()
+pos,e,v = usolver.single_point()
 
-#plt.hist(pos.detach().numpy())
-#plt.show()  
+plt.hist(pos.detach().numpy())
+plt.show()
 
-
+# wavefunction
+#wf = NeuralWaveFunction(pot_func,domain,ncenter,fcinit='random',sigma=0.5)
 
 # # optimizer
 # opt = optim.Adam(wf.parameters(),lr=0.05)
