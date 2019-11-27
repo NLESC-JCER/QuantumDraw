@@ -1,23 +1,25 @@
 import numpy as np 
 import torch
 from scipy import interpolate
+from quantumdraw.wave_function_base import WaveFunction
 
-class UserWaveFunction(object):
+class UserWaveFunction(WaveFunction):
 
-    def __init__(self,fpot,domain,data=None):
+    def __init__(self,fpot,domain,xpts=None,ypts=None):
+        super(UserWaveFunction,self).__init__(fpot,domain)
 
         # book the potential function
-        self.user_potential = fpot
-        self.domain = domain
-        self.data = data
-
+        self.data = {'x':xpts, 'y':xpts}
         self.get_interp()
 
     def get_interp(self):
 
-        if self.data is not None:
+        if self.data['x'] is not None:
             self.finterp = interpolate.interp1d(self.data['x'],
                                                 self.data['y'])
+    def load_data(self,x,y):
+        self.data['x'] = x
+        self.data['y'] = y
 
     def forward(self,pos):
         ''' Compute the value of the wave function.

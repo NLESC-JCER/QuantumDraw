@@ -26,15 +26,6 @@ class WaveFunction(object):
         '''
         raise NotImplementedError('forward method not implemented yet')
 
-    def nuclear_potential(self,pos):
-        '''Compute the potential of the wf points
-        Args:
-            pos: position of the electron
-
-        Returns: values of V * psi
-        '''
-        return self.user_potential(pos).flatten().view(-1,1)
-
     def kinetic_energy(self,pos,out=None):
         '''Compute the second derivative of the network
         output w.r.t the value of the input. 
@@ -50,7 +41,16 @@ class WaveFunction(object):
         '''
         raise NotImplementedError('forward method not implemented yet')
 
-       
+
+    def nuclear_potential(self,pos):
+        '''Compute the potential of the wf points
+        Args:
+            pos: position of the electron
+
+        Returns: values of V * psi
+        '''
+        return self.user_potential(pos).flatten().view(-1,1)
+
     def local_energy(self,pos):
         ''' local energy of the sampling points.'''
         

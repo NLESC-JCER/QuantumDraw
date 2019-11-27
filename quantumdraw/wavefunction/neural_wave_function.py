@@ -4,13 +4,17 @@ from torch import nn
 import torch.nn.functional as F
 from torch.autograd import grad, Variable
 
+from quantumdraw.wavefunction.wave_function_base import WaveFunction
 from quantumdraw.wavefunction.rbf import RBF
 
 
-class WaveFunction(nn.Module):
+class NeuralWaveFunction(nn.Module,WaveFunction):
 
     def __init__(self,fpot,domain,ncenter,fcinit=0.1,sigma=1.):
-        super(WaveFunction,self).__init__()
+
+        #super(WaveFunction,self).__init__()
+        WaveFunction.__init__(self,fpot,domain)
+        nn.Module.__init__(self)
 
         self.ndim = 1
         self.nelec = 1
@@ -38,9 +42,6 @@ class WaveFunction(nn.Module):
             nn.init.uniform_(self.fc.weight,0,1)
         elif isinstance(fcinit,float):  
             self.fc.weight.data.fill_(fcinit)
-
-        # book the potential function
-        self.user_potential = fpot
 
     def forward(self,x):
         ''' Compute the value of the wave function.
