@@ -49,12 +49,13 @@ class RBF(nn.Module):
 
         # Compute (INPUT-MU).T x Sigma^-1 * (INPUT-MU)-> (Nbatch,Nrbf)
         X = ( delta**2 ).sum(2)
+        eps = 1E-6
 
         if der == 0:
             # divide by the determinant of the cov mat
-            X = torch.exp(-X/self.sigma)
+            X = torch.exp(-X/(self.sigma+eps))
     
         elif der == 2 :
-            X = (4*X/self.sigma**2-2./self.sigma) * torch.exp(-X/self.sigma)
+            X = (4*X/(self.sigma+eps)**2-2./(self.sigma+eps)) * torch.exp(-X/(self.sigma+eps))
 
         return X.view(-1,self.ncenter)

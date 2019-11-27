@@ -29,7 +29,7 @@ sampler = Metropolis(nwalkers=100, nstep=100,
                      step_size = 0.5, domain = domain)
 
 usolver = UserSolver(wf=uwf,sampler=sampler)
-plot_wf_1d(usolver,domain,51,grad=False,sol=None,feedback=usolver.feedback())
+plot_wf_1d(usolver,domain,51,feedback=usolver.feedback())
 pos,e,v = usolver.single_point()
 
 

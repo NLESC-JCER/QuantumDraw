@@ -7,6 +7,8 @@ from torch.autograd import grad, Variable
 from quantumdraw.wavefunction.wave_function_base import WaveFunction
 from quantumdraw.wavefunction.rbf import RBF
 
+import time
+
 class NeuralWaveFunction(nn.Module,WaveFunction):
 
     def __init__(self,fpot,domain,ncenter,fcinit=0.1,sigma=1.):
@@ -45,6 +47,8 @@ class NeuralWaveFunction(nn.Module,WaveFunction):
             self.fc.weight.data.fill_(fcinit)
             self.fc.weight.data[0][int(self.ncenter/2)]=1.
 
+        self.kinetic_energy = self.kinetic_energy_analytical
+
     def forward(self,x):
         ''' Compute the value of the wave function.
         for a multiple conformation of the electrons
@@ -68,7 +72,7 @@ class NeuralWaveFunction(nn.Module,WaveFunction):
         '''
         return self.user_potential(pos).flatten().view(-1,1)
 
-    def kinetic_energy(self,pos,out=None):
+    def kinetic_energy_analytical(self,pos,out=None):
         x = self.rbf(pos,der=2)
         x = self.fc(x)
         return -0.5*x.view(-1,1)
@@ -119,6 +123,7 @@ class NeuralWaveFunction(nn.Module,WaveFunction):
         
         wf = self.forward(pos)
         ke = self.kinetic_energy(pos,out=wf)
+        
         return ke/wf + self.nuclear_potential(pos)
 
     def energy(self,pos):

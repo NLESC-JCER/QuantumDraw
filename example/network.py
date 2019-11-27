@@ -20,7 +20,7 @@ def ho1d_sol(pos):
 domain, ncenter = {'xmin':-5.,'xmax':5.}, 11
 
 #sampler
-sampler = Metropolis(nwalkers=1000, nstep=2000, 
+sampler = Metropolis(nwalkers=500, nstep=2000, 
                      step_size = 0.5, domain = domain)
 
 # wavefunction
@@ -34,14 +34,14 @@ scheduler = optim.lr_scheduler.StepLR(opt,step_size=100,gamma=0.75)
 
 # define solver
 solver = NeuralSolver(wf=wf,sampler=sampler,optimizer=opt,scheduler=scheduler)
-#plot_wf_1d(solver,domain,51,sol=ho1d_sol)
-#pos,e,v = solver.single_point()
+# plot_wf_1d(solver,domain,51,sol=ho1d_sol)
+# pos,e,v = solver.single_point()
 
 
 
 # train the wave function
 plotter = plotter1d(wf,domain,100,sol=ho1d_sol)#,save='./image/')
-solver.run(75,loss = 'variance', plot = None, save='model.pth' )
+solver.run(75,loss = 'variance', plot = plotter, save='model.pth' )
 
 # plot the final wave function 
 plot_results_1d(solver,domain,100,ho1d_sol,e0=0.5,load='model.pth')

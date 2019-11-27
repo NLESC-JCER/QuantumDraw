@@ -94,8 +94,8 @@ class NeuralSolver(Solver):
         min_loss = 1E3
 
         for n in range(nepoch):
-            print('----------------------------------------')
-            print('epoch %d' %n)
+            #print('----------------------------------------')
+            #print('epoch %d' %n)
 
             cumulative_loss = 0
             for data in self.dataloader:

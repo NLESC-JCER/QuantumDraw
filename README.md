@@ -45,7 +45,7 @@ sampler = Metropolis(nwalkers=100, nstep=100,
 usolver = UserSolver(wf=uwf,sampler=sampler)
 
 #example of what the UI could look like
-plot_wf_1d(usolver,domain,51,grad=False,sol=None,feedback=usolver.feedback())
+plot_wf_1d(usolver,domain,51,feedback=usolver.feedback())
 
 # get the score of the user
 pos,e,v = usolver.single_point()
