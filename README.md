@@ -51,6 +51,10 @@ plot_wf_1d(usolver,domain,51,grad=False,sol=None,feedback=usolver.feedback())
 pos,e,v = usolver.single_point()
 ``` 
 
+<p align="center">
+<img src="./image/ui.png" title="possible UI">
+</p>
+
 
 ## Example : Neural wave function
 
