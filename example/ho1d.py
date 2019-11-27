@@ -1,5 +1,7 @@
 import torch
 from torch import optim
+import numpy as np
+
 
 from quantumdraw.sampler.metropolis import  Metropolis
 from quantumdraw.wavefunction.neural_wave_function import NeuralWaveFunction
@@ -21,8 +23,9 @@ domain, ncenter = {'xmin':-5.,'xmax':5.}, 11
 
 
 #user wave function
-xpts = np.sort(np.random.rand(100)*10-5)
+xpts = torch.tensor(np.sort(np.random.rand(100)*10-5))
 ypts = ho1d_sol(xpts).detach().numpy()
+xpts = xpts.detach().numpy()
 uwf = UserWaveFunction(pot_func,domain,xpts=xpts,ypts=ypts)
 
 # wavefunction

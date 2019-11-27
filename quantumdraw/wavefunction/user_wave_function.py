@@ -1,7 +1,8 @@
 import numpy as np 
 import torch
 from scipy import interpolate
-from quantumdraw.wave_function_base import WaveFunction
+
+from quantumdraw.wavefunction.wave_function_base import WaveFunction
 
 class UserWaveFunction(WaveFunction):
 
@@ -20,7 +21,8 @@ class UserWaveFunction(WaveFunction):
         """
         if self.data['x'] is not None:
             self.finterp = interpolate.interp1d(self.data['x'],
-                                                self.data['y'])
+                                                self.data['y'],
+                                                fill_value='extrapolate')
     def load_data(self,x,y):
         """load data points in the class
         
@@ -28,6 +30,16 @@ class UserWaveFunction(WaveFunction):
             x (array): x coordinates of the points
             y (array): y values of the points
         """
+        
+        x = np.insert(x,0,1.25*self.domain['xmin'])
+        y = np.insert(y,0,0)
+
+        x = np.insert(x,len(x),1.25*self.domain['xmax'])
+        y = np.insert(y,len(y),0)
+
+        print(np.min(x),np.max(x))
+
+        self.data = {'x':[],'y':[]}
         self.data['x'] = x
         self.data['y'] = y
 

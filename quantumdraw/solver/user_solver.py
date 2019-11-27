@@ -1,4 +1,5 @@
 import numpy as np 
+import torch
 from quantumdraw.solver.solver_base import Solver
 
 
@@ -22,7 +23,7 @@ class UserSolver(Solver):
 
         x = torch.linspace(self.wf.domain['xmin'],self.wf.domain['xmax'],npts)
         dx2 = (x[1]-x[0])**2
-        Vx = torch.diag(wf.nuclear_potential(x)).detach().numpy()
+        Vx = torch.diag(self.wf.nuclear_potential(x)).detach().numpy()
         K = -0.5 / dx2 * ( np.eye(npts,k=1) + np.eye(npts,k=-1) - 2. * np.eye(npts))
 
         _, U = np.linalg.eigh(K+Vx)

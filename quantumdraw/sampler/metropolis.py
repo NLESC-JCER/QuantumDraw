@@ -6,7 +6,7 @@ from tqdm import tqdm
 class Metropolis(object):
 
     def __init__(self, nwalkers=1000, nstep=1000,
-                 step_size = 3, domain = {'min':-2,'max':2}):
+                 step_size = 3, domain = {'xmin':-2,'xmax':2}):
 
         """Metropolis hasting sampling.
 
@@ -30,7 +30,7 @@ class Metropolis(object):
 
 
         """Generates a series of point sampling the function pdf
-        
+
         Args :
             pdf (function) : pdf of the function to sample
             ntherm (int) : number of step to skip
