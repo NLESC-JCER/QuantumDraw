@@ -13,6 +13,7 @@ from quantumdraw.solver.torch_utils import DataSet, Loss, ZeroOneClipper
 from tqdm import tqdm
 import time
 
+
 class Solver(object):
 
     def __init__(self,wf=None, sampler=None):
@@ -22,6 +23,9 @@ class Solver(object):
 
         # observalbe
         self.observable(['local_energy'])
+
+        # get the solution via fd
+        self.solution = self.get_solution()
 
     def observable(self,obs):
         '''Create the observalbe we want to track.'''
@@ -86,4 +90,37 @@ class Solver(object):
             print('Energy   : ',e)
             print('Variance : ',s)
         return pos, e, s
+
+    def get_solution(self,npts=100):
+
+        """Computes the solution using finite difference
+        
+        Args:
+            npts (int, optional): number of discrete points. Defaults to 100.
+
+        Returns:
+            dict: position and numerical value of the wave function 
+        """
+
+        x = torch.linspace(self.wf.domain['xmin'],self.wf.domain['xmax'],npts)
+        dx2 = (x[1]-x[0])**2
+        Vx = np.diag(self.wf.nuclear_potential(x).detach().numpy().flatten())
+        K = -0.5 / dx2 * ( np.eye(npts,k=1) + np.eye(npts,k=-1) - 2. * np.eye(npts))
+        l, U = np.linalg.eigh(K+Vx)
+        return {'x':x.detach().numpy(),'y':U[:,0],'max':np.max(U[:,0])}
+
+    def get_score(self):
+        
+        with torch.no_grad():
+
+            ywf = self.wf(torch.tensor(self.solution['x'])).detach().numpy()
+            ywf = (ywf/np.max(ywf) * self.solution['max']).flatten()
+            return self._score(ywf)
+
+    def _score(self,yvals):
+    
+        d = np.sqrt(np.sum((self.solution['y']-yvals)**2))
+        return np.exp(-d)
+
+
 

@@ -11,8 +11,8 @@ class UserWaveFunction(WaveFunction):
 
         # book the potential function
         self.load_data(xpts,ypts)
-        #self.get_interp()
-        self.get_spline()
+        self.get_interp()
+        #self.get_spline()
 
     def __call__(self,pos):
         return self.forward(pos)
@@ -27,7 +27,11 @@ class UserWaveFunction(WaveFunction):
 
     def get_spline(self):
         if self.data['x'] is not None:
-            self.finterp = interpolate.InterpolatedUnivariateSpline(self.data['x'],self.data['y'],k=5)
+            # self.finterp = interpolate.CubicSpline(self.data['x'],self.data['y'],extrapolate='True')
+            # self.finterp_kin = self.finterp.derivative(nu=2)
+
+            #self.finterp = interpolate.InterpolatedUnivariateSpline(self.data['x'],self.data['y'],k=2)
+            self.finterp = interpolate.UnivariateSpline(self.data['x'],self.data['y'],k=5)
             self.finterp_kin = self.finterp.derivative(n=2)
 
     def load_data(self,x,y):
@@ -76,17 +80,17 @@ class UserWaveFunction(WaveFunction):
         Returns:
             torch.tensor: values of the kinetic energy
         """
-        _spl_ = True
+        _spl_ = False
         if _spl_:
             K = torch.tensor(-0.5*self.finterp_kin(pos.detach().numpy()))
         else:
-            eps = 1E-5
+            eps = 5*1E-2
             if out is None:
                 out = self.forward(pos)
 
             xp = self.forward(pos+eps)
             xm = self.forward(pos-eps)
-            K = -0.5/eps/eps * (xm+xp-2.*out)
+            K = -0.5 / eps / eps * (xm+xp-2.*out)
 
         return K.view(-1,1)
 
