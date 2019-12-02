@@ -124,6 +124,7 @@ class NeuralSolver(Solver):
             print('loss %f' %(cumulative_loss))
             print('variance : %f' %np.var(self.obs_dict['local_energy'][-1]))
             print('energy : %f' %np.mean(self.obs_dict['local_energy'][-1]) )   
+            print('score : %f' %self.get_score() )   
             print('----------------------------------------')
             
             # resample the data

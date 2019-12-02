@@ -34,8 +34,10 @@ class Solver(object):
         for k in obs:
             self.obs_dict[k] = []
 
-        if 'local_energy' not in self.obs_dict:
-            self.obs_dict['local_energy'] = []
+        required_obs = ['local_energy']
+        for k in required_obs:
+            if k not in self.obs_dict:
+                self.obs_dict[k] = []
             
     def sample(self, ntherm=-1,with_tqdm=True,pos=None):
         ''' sample the wave function.'''

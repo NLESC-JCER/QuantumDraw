@@ -59,6 +59,7 @@ class NeuralWaveFunction(nn.Module,WaveFunction):
 
         Returns: values of psi
         '''
+        x = x.view(-1,1)
         x = self.rbf(x)
         x = self.fc(x)
         return x.view(-1,1)
