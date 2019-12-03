@@ -47,8 +47,11 @@ usolver = UserSolver(wf=uwf,sampler=sampler)
 #example of what the UI could look like
 plot_wf_1d(usolver,domain,51,feedback=usolver.feedback())
 
-# get the score of the user
+# get the energy/variance of the user wave function
 pos,e,v = usolver.single_point()
+
+# get the score of the user
+score = usolver.get_score()
 ``` 
 
 <p align="center">
