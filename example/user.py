@@ -1,5 +1,4 @@
 import torch
-from torch import optim
 import numpy as np
 
 from quantumdraw.sampler.metropolis import  Metropolis
@@ -29,7 +28,7 @@ uwf = UserWaveFunction(pot_func,domain,xpts=xpts,ypts=ypts)
 sampler = Metropolis(nwalkers=100, nstep=100, 
                      step_size = 0.5, domain = domain)
 
-usolver = UserSolver(wf=uwf,sampler=sampler)
+usolver = UserSolver(wf=uwf, sampler=sampler)
 plot_wf_1d(usolver,domain,51,pot=False,feedback=usolver.feedback())
 pos,e,v = usolver.single_point()
 
