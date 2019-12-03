@@ -95,6 +95,11 @@ solver.run(300,loss = 'variance', plot = plotter,save='model.pth' )
 plot_results_1d(solver,domain,100,ho1d_sol,e0=0.5,load='model.pth')
 ```
 
-
-
+# Setup
+Use python 3.7 virtual env
+- `pip install numpy cython`
+- `pip install -r requirements.txt`
+- `pip install -e .`
+- `python quantumdraw/server/server.py`
+- open browser on `http://localhost:8888`
 

@@ -7,12 +7,12 @@ import torch
 def level1(pos):
     if isinstance(pos, torch.Tensor):
         v = 0.1*torch.ones_like(pos)
-        v[pos<-2.5] = 1.
-        v[pos>2.5] = 1.
+        v[pos<-2.5] = 5.
+        v[pos>2.5] = 5.
 
         return v
     else:
-        return .1 if np.abs(pos) < 2.5 else 1.
+        return .1 if np.abs(pos) < 2.5 else 5.
 
 potentials = [
     level1,
