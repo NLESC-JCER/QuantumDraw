@@ -107,7 +107,7 @@ class Solver(object):
         x = torch.linspace(self.wf.domain['xmin'],self.wf.domain['xmax'],npts)
         dx2 = (x[1]-x[0])**2
         Vx = np.diag(self.wf.nuclear_potential(x).detach().numpy().flatten())
-        K = -0.5 / dx2 * ( np.eye(npts,k=1) + np.eye(npts,k=-1) - 2. * np.eye(npts))
+        K = -0.5 / dx2.numpy() * ( np.eye(npts,k=1) + np.eye(npts,k=-1) - 2. * np.eye(npts))
         l, U = np.linalg.eigh(K+Vx)
         return {'x':x.detach().numpy(),'y':U[:,0],'max':np.max(U[:,0])}
 
