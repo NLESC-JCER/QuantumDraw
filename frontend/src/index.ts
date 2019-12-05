@@ -1,20 +1,25 @@
 import * as d3 from 'd3';
+import * as chartXkcd from 'chart.xkcd';
+import XY from './XY';
+import './index.css';
 
 declare const window: any;
 
 const root = `${window.location.host}${window.location.pathname}`;
 const websocketURL = `ws://${root}ws`;
-// const socket = window.socket = new WebSocket('ws://localhost:8888/ws');
-const socket = window.socket = new WebSocket(websocketURL);
+const socket = window.socket = new WebSocket('ws://localhost:8888/ws');
+// const socket = window.socket = new WebSocket(websocketURL);
 
 let canvas: HTMLCanvasElement;
 let context: CanvasRenderingContext2D;
 
 // let level = 0;
-let guessAttemptNumber = 0;
+let userGuessAttemptNumber = 0;
 
 let userscore = 0;
 let aiscore = 0;
+
+let startTime = 0;
 
 const HEIGHT = 500;
 const WIDTH = 1000;
@@ -30,9 +35,19 @@ canvas.height = HEIGHT;
 document.body.appendChild(canvas);
 context = canvas.getContext("2d");
 
-const strokes = [[[79, 208], [105, 204], [151, 189], [264, 159], [400, 119], [509, 95], [567, 91], [582, 95], [585, 111], [585, 136], [585, 164], [586, 184], [595, 198], [608, 201], [647, 201], [723, 188], [811, 169], [881, 154], [906, 146], [915, 142], [916, 144], [916, 147]]];
-let potential = [[[79, 208], [105, 204], [151, 189], [264, 159], [400, 119], [509, 95], [567, 91], [582, 95], [585, 111], [585, 136], [585, 164], [586, 184], [595, 198], [608, 201], [647, 201], [723, 188], [811, 169], [881, 154], [906, 146], [915, 142], [916, 144], [916, 147]]];
-let aiguess = [[[33, 271], [32, 264], [32, 245], [41, 212], [56, 165], [73, 103], [85, 69], [92, 51], [97, 42], [99, 38], [101, 37], [104, 37], [108, 40], [111, 54], [126, 81], [141, 112], [154, 139], [164, 165], [173, 185], [179, 200], [185, 214], [187, 219], [190, 222], [191, 223], [193, 222], [203, 205], [230, 168], [266, 136], [296, 117], [315, 107], [324, 103], [326, 103], [328, 108], [330, 123], [341, 161], [354, 208], [361, 230], [368, 244], [371, 251], [373, 253], [375, 253], [388, 237], [414, 202], [444, 160], [495, 109], [518, 92], [527, 85], [529, 84], [532, 85], [536, 106], [543, 155], [551, 210], [560, 255], [570, 281], [580, 298], [593, 306], [620, 303], [633, 275], [655, 226], [683, 174], [709, 141], [726, 125], [736, 118], [738, 117], [741, 117], [745, 130], [750, 158], [754, 182], [758, 200], [762, 209], [768, 209], [787, 194], [819, 154], [851, 110], [890, 65], [922, 42], [944, 40], [955, 42], [961, 51], [963, 63], [963, 77], [962, 100], [962, 115], [964, 129], [968, 136], [970, 137], [971, 137], [974, 132], [975, 124]]];
+const strokes = [];
+let potential = [];
+let aiguess = [];
+
+let linechartData = {
+    datasets: [{
+        label: 'User scores',
+        data: [],
+      }, {
+        label: 'AI scores',
+        data: [],
+      }],
+};
 
 (window as any).strokes = strokes;
 const curve = d3.curveBasis(context);
@@ -126,41 +141,73 @@ function dragged() {
 function reset() {
     strokes.length = 0;
     sendResetMessage(0);
-    guessAttemptNumber = 0;
+    userGuessAttemptNumber = 0;
+
+    linechartData = {
+        datasets: [{
+            label: 'User scores',
+            data: [],
+          }, {
+            label: 'AI scores',
+            data: [],
+          }],
+    };
+    window.linechart.data = linechartData;
+
+    // Clear and Rerender
+    document.querySelector('.line-chart>g:first-child').innerHTML = '';
+    window.linechart.render();
+
     render();
 }
 
-render();
+window.addEventListener('load', () => {
+    reset();
+});
 
-//Add user score number
-function createScore() {
-    const scores = document.createElement('div') as HTMLDivElement;
-    const userscoreP = document.createElement('P') as HTMLParagraphElement;
-    userscoreP.className = 'userScoreP';
-    scores.appendChild(userscoreP);
-    userscoreP.innerText = 'User score now: 0';
+function updateUserScore(time: number, value: number) {
+    const userScoreP = d3.select('.userScoreP');
+    const userAttemptP = d3.select('.userAttemptP');
+    const userTimeP = d3.select('.userTimeP');
 
-    const aiscoreP = document.createElement('P') as HTMLParagraphElement;
-    aiscoreP.className = 'aiScoreP';
-    scores.appendChild(aiscoreP);
-    aiscoreP.innerText = 'AI score now: 0';
+    if (userGuessAttemptNumber === 0) {
+        startTime = time;
+    }
 
-    document.body.appendChild(scores);
+    let displayTime = (time - startTime) / 1000;
+    userGuessAttemptNumber++;
+
+    userscore = value * 1000;
+
+    userScoreP.text("User score now: " + userscore.toString());
+    userAttemptP.text("User attempt: " + userGuessAttemptNumber.toString());
+    userTimeP.text("User time: " + displayTime.toString());
+    
+    linechartData.datasets[0].data.push({x:displayTime, y:userscore});
+
+    // Clear and Rerender
+    document.querySelector('.line-chart>g:first-child').innerHTML = '';
+    window.linechart.render();
+
+    
 }
 
-function updateUserScore(value :number) {    
-    const userscoreP = d3.select('.userScoreP');
-    userscoreP.text("User score now: " + value.toString());
-    userscore = value;
+function updateAIScore(time: number, value: number) {
+    const aiscoreP = d3.select('.aiScoreP');
+
+    let displayTime = (time - startTime) / 1000;
+    
+    aiscore = value * 1000;
+
+    aiscoreP.text("AI score now: " + aiscore.toString());
+
+    linechartData.datasets[1].data.push({x:displayTime, y:aiscore});
+    document.querySelector('.line-chart>g:first-child').innerHTML = '';
+    window.linechart.render();
+
 }
 
-function updateAIScore(value :number) {    
-    const aiscoreP = d3.select('.aiscoreP');
-    aiscoreP.text("AI score now: " + value.toString());
-    aiscore = value;
-}
-
-createScore();
+// createScore();
 
 //Add reset button
 const button = document.createElement('button');
@@ -168,7 +215,8 @@ button.innerHTML = 'reset';
 button.addEventListener('click', reset as any);
 document.body.appendChild(button);
 
-socket.addEventListener('message', function(event) {
+socket.addEventListener('message', function (event) {    
+    const time = new Date().getTime();
     const parsedData = JSON.parse(event.data);
     const eventType = parsedData.type;
 
@@ -176,11 +224,13 @@ socket.addEventListener('message', function(event) {
         potential = [parsedData.data];
         render();
     } else if (eventType === 'ai_score') {
-        updateAIScore(parsedData.score);
-        aiguess = [parsedData.points];
-        render();
+        if (userGuessAttemptNumber != 0) {
+            updateAIScore(time, parsedData.score);
+            aiguess = [parsedData.points];
+            render();
+        }
     } else if (eventType === 'user_score') {
-        updateUserScore(parsedData.score);
+        updateUserScore(time, parsedData.score);
     }
 })
 //
@@ -195,7 +245,7 @@ interface Message {
     data: any;
 }
 
-function sendResetMessage(level: number=0) {
+function sendResetMessage(level: number = 0) {
     let message: Message = {
         type: 'reset',
         data: level
@@ -210,3 +260,24 @@ function sendGuess(data: Array<Array<number>>) {
     };
     socket.send(JSON.stringify(message));
 }
+
+window.addEventListener('load',() => {
+    const svg = document.querySelector('.line-chart');
+    
+
+    window.linechart = new chartXkcd.XY(    
+        svg, {
+        title: 'Your score VS AI score', // optional
+        xLabel: 'Time in seconds', // optional
+        yLabel: 'Score', // optional
+        data: linechartData,
+        options: { // optional
+            xTickCount: 10,
+            yTickCount: 10,
+            dotSize: 1,
+            showLine: true,
+            legendPosition: chartXkcd.config.positionType.upLeft
+        }
+    });
+})
+
