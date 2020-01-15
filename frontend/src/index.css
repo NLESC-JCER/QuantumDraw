@@ -1,4 +1,218 @@
-.line-chart-div {
-    height: 400px;
-    width: 800px;
+body {
+  margin: 0;
+}
+a {
+  cursor: pointer;
+}
+.wrapper {
+  width: 100%;
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box;
+}
+#banner {
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  background-image: url(images/eSciece_banner.png);
+  background-repeat: no-repeat;
+  background-position: center top;
+  background-size: cover;
+  background-color: #00a3e3;
+  height: 100px;
+  width: 100%;
+}
+/* Splash View */
+
+#splash_view {
+  display: flex;
+  flex: 1;
+  justify-content: flex-start;
+  align-items: center;
+  height: 100vh;
+  flex-direction: column;
+  display: none;
+}
+#splash_view.visible {
+  display: flex;
+}
+#splash_view #splashView_logo {
+  position: relative;
+  width: 90%;
+  height: 100%;
+  max-width: 500px;
+  max-height: 500px;
+  min-height: 70px;
+  margin-left: 10px;
+  margin-right: 10px;
+  background-position: center;
+  background-image: url(images/quantum_logo.png);
+  background-repeat: no-repeat;
+  background-size: contain;
+}
+
+#splashView_tagline {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  text-align: center;
+}
+.tagline_font {
+  font-family: "Lakki Reddy", cursive;
+  font-size: 28px;
+}
+/*Custom Button CSS*/
+
+.button_with_shadow {
+  cursor: pointer;
+  margin-left: 5px;
+  margin-bottom: 15px;
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box;
+  font-size: 1.5em;
+  font-family: Helvetica, Arial, Sans-Serif;
+  text-decoration: none;
+  font-weight: bold;
+  color: #fff;
+  height: 50px;
+  line-height: 50px;
+  padding: 0 32.5px;
+  display: inline-block;
+  width: auto;
+  background: -webkit-gradient(linear, left top, left bottom, from(#3883bb), color-stop(26%, #3883bb), to(#0571c2));
+  background: -webkit-linear-gradient(top, #3883bb 0%, #3883bb 26%, #0571c2 100%);
+  background: -o-linear-gradient(top, #3883bb 0%, #3883bb 26%, #0571c2 100%);
+  background: linear-gradient(to bottom, #3883bb 0%, #3883bb 26%, #0571c2 100%);
+  border-radius: 5px;
+  border-top: 1px solid #66aecb;
+  border-bottom: 1px solid #66aecb;
+  top: 0;
+  -webkit-transition: all 0.06s ease-out;
+  -o-transition: all 0.06s ease-out;
+  transition: all 0.06s ease-out;
+  position: relative;
+}
+.button_with_shadow:visited {
+  color: #fff;
+}
+
+.button_with_shadow:active {
+  top: 6px;
+  /* text-shadow: 0 -2px 0 #7fbb98, 0 1px 1px #c2dece, 0 0 4px white; */
+  color: white;
+}
+.button_with_shadow:active:before {
+  top: 0;
+  -webkit-box-shadow: 0 3px 3px rgba(0, 0, 0, 0.7), 0 3px 9px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 3px 3px rgba(0, 0, 0, 0.7), 0 3px 9px rgba(0, 0, 0, 0.2);
+}
+
+.button_with_shadow:before {
+  display: inline-block;
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  z-index: -1;
+  top: 6px;
+  border-radius: 5px;
+  height: 50px;
+  background: -webkit-linear-gradient(bottom, #0571c2 0%, #3883bb 6px);
+  background: -o-linear-gradient(bottom, #0571c2 0%, #3883bb 6px);
+  background: linear-gradient(to top, #0571c2 0%, #3883bb 6px);
+  -webkit-transition: all 0.078s ease-out;
+  -o-transition: all 0.078s ease-out;
+  transition: all 0.078s ease-out;
+  -webkit-box-shadow: 0 1px 0 2px rgba(0, 0, 0, 0.3), 0 5px 2.4px rgba(0, 0, 0, 0.5), 0 10.8px 9px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 1px 0 2px rgba(0, 0, 0, 0.3), 0 5px 2.4px rgba(0, 0, 0, 0.5), 0 10.8px 9px rgba(0, 0, 0, 0.2);
+}
+
+/* Game View */
+
+#game_view {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(173deg, #fff 0, #0571c2 100%);
+  left: 0;
+  top: -100%;
+  transition: top 0.8s ease-in-out, left 0.8s linear, width 0.8s linear, transform 0.8s linear;
+  font-size: 14px;
+  text-align: center;
+}
+#game_view.visible {
+  top: 0;
+}
+
+.top_bar {
+  display: flex;
+  flex: 1;
+  flex-direction: row-reverse;
+  align-items: center;
+  justify-content: center;
+}
+.scores {
+  display: flex;
+  flex: 1;
+  justify-content: space-evenly;
+}
+#close_game_button.button_with_shadow {
+  margin: 10px;
+}
+#canvas_view {
+  width: 80%;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column-reverse;
+  flex: 1;
+  justify-content: space-around;
+}
+canvas {
+  flex: 1;
+  width: 100%;
+  background-color: #f8f9ff;
+}
+#line-chart-div {
+  flex: 1;
+  width: 100%;
+  visibility: hidden;
+}
+#line-chart-div.visible-chart {
+  visibility: visible;
+}
+@media screen and (device-width: 1024px) and (-webkit-min-device-pixel-ratio: 1) {
+  #canvas_view {
+    align-items: center;
+  }
+  canvas {
+    width: 60%;
+  }
+  #line-chart-div {
+    width: 60%;
+  }
+}
+@media screen and (min-device-width: 1281px) and (-webkit-min-device-pixel-ratio: 1) {
+  #canvas_view {
+    flex-direction: row-reverse;
+  }
+  canvas {
+    width: 50%;
+  }
+  #line-chart-div {
+    width: 50%;
+  }
+}
+
+/* ----------- Retina Screens ----------- */
+@media screen and (min-device-width: 1281px) and (-webkit-min-device-pixel-ratio: 2) and (min-resolution: 192dpi) {
+  #canvas_view {
+    flex-direction: row-reverse;
+  }
+  canvas {
+    width: 50%;
+  }
+  #line-chart-div {
+    width: 50%;
+  }
 }

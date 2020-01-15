@@ -1,20 +1,59 @@
+<!DOCTYPE html>
 <html>
-    <head>
-        <title>Draw app</title>
-    </head>
-    <body>
-        <script src="index.ts"></script>
-        <div class='scores'>
-            <p class='userScoreP'>User score now: 0</p>
-            <p class='userAttemptP'>User attempt: 0</p>
-            <p class='aiScoreP'>AI score now: 0</p>
-            <p class='userTimeP'>User time: 0</p>
-        </div>
 
-        <div class='line-chart-div'>
-            <svg class='line-chart'></svg>
-        </div>
-        
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Draw App</title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="https://fonts.googleapis.com/css?family=Lakki+Reddy&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="index.css">
+    <!-- web componets-->
+    <script src="./web_components/social.js"></script>
+</head>
 
-    </body>
+<body>
+    <main>
+        <div class="wrapper">
+            <div id="splash_view" class="visible">
+                <div id="banner">
+                    <div id="logo">
+                        <img src="images/logo_escience_center.png" />
+                    </div>
+                    <nlesc-social></nlesc-social>
+                </div>
+                <div id="splashView_logo"></div>
+                <div id="splashView_tagline">
+                    <span class="tagline_font"> Can you solve quantum mechanical problems faster than a neural
+                        network?</span>
+                    <button id="start_button" class="button_with_shadow">Let's start</button>
+                </div>
+            </div>
+
+            <div id="game_view">
+
+                <div class="top_bar">
+                    <button id="close_game_button" class="button_with_shadow">X</button>
+                    <div class='scores'>
+                        <p class='userScoreP'>User score now: 0</p>
+                        <p class='userAttemptP'>User attempt: 0</p>
+                        <p class='aiScoreP'>AI score now: 0</p>
+                        <p class='userTimeP'>User time: 0</p>
+                    </div>
+                </div>
+
+                <div id='canvas_view'>
+                    <div id='line-chart-div'>
+                        <svg class='line-chart'></svg>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </main>
+    <script src="index.ts" defer></script>
+    <script src="draw.ts" defer></script>
+</body>
+
 </html>
