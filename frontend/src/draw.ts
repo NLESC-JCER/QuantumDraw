@@ -30,8 +30,8 @@ const POTSTYLE = "#993366";
 const STROKESTYLE = "#000000";
 const LINEWIDTH = 5;
 
-const ORISTYLE = "#000000";
-const ORILINEWIDTH = 10;
+const ORISTYLE = "#808080";
+const ORILINEWIDTH = 5;
 
 const AISTYLE = "#3366ff";
 const AILINEWIDTH = 2
@@ -68,7 +68,7 @@ function render() {
         context.beginPath();
         curve.lineStart();
         for (const point of oriStroke) {
-            curve.point(x(point[0]), 0.0);
+            curve.point(x(point[0]), zeros(point[0]));
         }
         if (oriStroke.length === 1) curve.point(oriStroke[0][0], oriStroke[0][1]);
         curve.lineEnd();
@@ -119,6 +119,11 @@ function render() {
     // context.canvas.value = strokes;
     context.canvas.dispatchEvent(new CustomEvent("input"));
 }
+
+var zeros = d3.scaleLinear()
+    .domain([1, -1])
+    .range([500, 500]);
+
 
 var x = d3.scaleLinear()
     .domain([-5, 5])
@@ -247,6 +252,7 @@ socket.addEventListener('message', function (event) {
 
     if (eventType === 'potential') {
         potential = [parsedData.data];
+        origin = [parsedData.data];
         render();
     } else if (eventType === 'ai_score') {
         if (userGuessAttemptNumber != 0) {
