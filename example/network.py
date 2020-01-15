@@ -10,7 +10,11 @@ from quantumdraw.solver.plot_utils import plot_results_1d, plotter1d, plot_wf_1d
 
 def pot_func(pos):
     '''Potential function desired.'''
+    # change domain to -3 8 for morse !!
+    #return 0.5*(torch.exp(-2.*(pos)) - 2.*torch.exp(-pos)).view(-1, 1)
     return  0.5*pos**2
+
+
 
 def ho1d_sol(pos):
     '''Analytical solution of the 1D harmonic oscillator.'''
@@ -21,7 +25,7 @@ domain, ncenter = {'xmin':-5.,'xmax':5.}, 11
 
 #sampler
 sampler = Metropolis(nwalkers=500, nstep=2000, 
-                     step_size = 0.5, domain = domain)
+                     step_size = 1, domain = domain)
 
 # wavefunction
 wf = NeuralWaveFunction(pot_func,domain,ncenter,fcinit='random',sigma=0.5)

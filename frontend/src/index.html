@@ -16,6 +16,7 @@
 <body>
     <main>
         <div class="wrapper">
+
             <div id="splash_view" class="visible">
                 <div id="banner">
                     <div id="logo">
@@ -31,10 +32,26 @@
                 </div>
             </div>
 
-            <div id="game_view">
+            <div id="ready_view" class="visible">
+                <div id="banner">
+                    <div id="logo">
+                        <img src="images/logo_escience_center.png" />
+                    </div>
+                    <nlesc-social></nlesc-social>
+                </div>
+                
+                <div id="ready_tagline">
+                    <span class="tagline_font"> Solve the harmonic oscillator in less than 60 sec.</span>
+                    <button id="ready_button" class="button_with_shadow">Ready ?</button>
+                </div>
+            </div>
 
+            <div id="game_view">
                 <div class="top_bar">
-                    <button id="close_game_button" class="button_with_shadow">X</button>
+                    <div class='games_button'>
+                        <button id="close_game_button" class="button_with_shadow">X</button>
+                        <button id="next_button" class="button_with_shadow">Next</button>
+                    </div>
                     <div class='scores'>
                         <p class='userScoreP'>User score now: 0</p>
                         <p class='userAttemptP'>User attempt: 0</p>

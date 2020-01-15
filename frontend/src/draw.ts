@@ -23,10 +23,18 @@ let startTime = 0;
 
 const HEIGHT = parseInt(d3.select('#canvas_view').style('width'), 10);
 const WIDTH = parseInt(d3.select('#canvas_view').style('width'), 10) - 40;
-const LINEWIDTH = 1;
+
+const POTLINEWIDTH = 10;
+const POTSTYLE = "#993366";
+
 const STROKESTYLE = "#000000";
-const TARGETSTYLE = "#ff0000";
-const AISTYLE = "#0000ff";
+const LINEWIDTH = 5;
+
+const ORISTYLE = "#000000";
+const ORILINEWIDTH = 10;
+
+const AISTYLE = "#3366ff";
+const AILINEWIDTH = 2
 
 canvas = document.createElement('canvas');
 canvas.width = WIDTH;
@@ -36,6 +44,7 @@ context = canvas.getContext("2d");
 
 const strokes = [];
 let potential = [];
+let origin = [];
 let aiguess = [];
 
 let linechartData = {
@@ -54,6 +63,20 @@ const redo = [];
 
 function render() {
     context.clearRect(0, 0, WIDTH, HEIGHT);
+
+    for (const oriStroke of origin) {
+        context.beginPath();
+        curve.lineStart();
+        for (const point of oriStroke) {
+            curve.point(x(point[0]), 0.0);
+        }
+        if (oriStroke.length === 1) curve.point(oriStroke[0][0], oriStroke[0][1]);
+        curve.lineEnd();
+        context.lineWidth = ORILINEWIDTH;
+        context.strokeStyle = ORISTYLE;
+        context.stroke();
+    }
+
     for (const stroke of strokes) {
         context.beginPath();
         curve.lineStart();
@@ -75,8 +98,8 @@ function render() {
         }
         if (potentialStroke.length === 1) curve.point(potentialStroke[0][0], potentialStroke[0][1]);
         curve.lineEnd();
-        context.lineWidth = LINEWIDTH;
-        context.strokeStyle = TARGETSTYLE;
+        context.lineWidth = POTLINEWIDTH;
+        context.strokeStyle = POTSTYLE;
         context.stroke();
     }
 
@@ -88,7 +111,7 @@ function render() {
         }
         if (aiStroke.length === 1) curve.point(aiStroke[0][0], aiStroke[0][1]);
         curve.lineEnd();
-        context.lineWidth = LINEWIDTH;
+        context.lineWidth = AILINEWIDTH;
         context.strokeStyle = AISTYLE;
         context.stroke();
     }
@@ -101,8 +124,11 @@ var x = d3.scaleLinear()
     .domain([-5, 5])
     .range([-1, WIDTH + 1]);
 
+// what is that scale ? 
+// with .domain([1,0]) the bottom of the harmonic
+// oscillator pot doesnt show ....    
 var y = d3.scaleLinear()
-    .domain([1, 0])
+    .domain([1, -1.])
     .range([-1, HEIGHT + 1]);
 
 

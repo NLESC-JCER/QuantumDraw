@@ -50,6 +50,7 @@ a {
   background-size: contain;
 }
 
+
 #splashView_tagline {
   display: flex;
   flex-direction: column;
@@ -58,10 +59,22 @@ a {
   padding: 20px;
   text-align: center;
 }
+
+#ready_tagline {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: left;
+  padding: 100px;
+  text-align: center;
+}
+
 .tagline_font {
   font-family: "Lakki Reddy", cursive;
   font-size: 28px;
 }
+
+
 /*Custom Button CSS*/
 
 .button_with_shadow {

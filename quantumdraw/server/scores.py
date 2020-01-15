@@ -40,17 +40,18 @@ def get_ai_score(current_pot, max_iterations=100):
     solver = NeuralSolver(wf=wf, sampler=sampler, optimizer=opt, scheduler=scheduler)
     # solver = NeuralSolver(wf=wf, sampler=sampler, optimizer=None, scheduler=None)
 
-    solver.run(1)
+    pos = solver.run(1)
     solver.sampler.nstep = solver.resample.resample
 
-    for i in range(0, max_iterations):
-        solver.run(1)
+    for _ in range(0, max_iterations):
+        pos = solver.run(1, pos=pos)
         num_samples = 50
         low_x = -5
         high_x = 5
         x_points = [low_x + sample_num * (high_x - low_x) / num_samples for sample_num in range(0, num_samples)]
         x = torch.tensor(x_points)
         y = solver.wf(x)
+        y /= y.max()
         y_points = y.detach().numpy().T[0].tolist()
         points = list(zip(x_points, y_points))
         yield points, solver.get_score()
