@@ -115,7 +115,7 @@ class Solver(object):
         
         with torch.no_grad():
 
-            ywf = self.wf(torch.tensor(self.solution['x'])).detach().numpy()
+            ywf = self.wf(torch.tensor(self.solution['x'])).clone().detach().numpy()
             ywf = (ywf/np.max(ywf) * self.solution['max']).flatten()
             return self._score(ywf)
 

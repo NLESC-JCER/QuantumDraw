@@ -10,7 +10,6 @@ from quantumdraw.server.scores import get_ai_score, get_user_score
 
 class IndexHandler(web.RequestHandler):
     def get(self):
-        # self.write('hello world')
         self.render("index.html")
 
 

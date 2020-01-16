@@ -48,7 +48,7 @@ class NeuralSolver(Solver):
             }, filename)
         return loss
 
-    def run(self,nepoch, batchsize=None, save='model.pth',  loss='variance', plot = None):
+    def run(self, nepoch, pos = None, batchsize=None, save='model.pth',  loss='variance', plot = None):
 
         '''Train the model.
 
@@ -70,7 +70,7 @@ class NeuralSolver(Solver):
         self.save_model = save
 
         # sample the wave function
-        pos = self.sample(ntherm=self.resample.ntherm)
+        pos = self.sample(pos=pos, ntherm=self.resample.ntherm)
 
         # determine the batching mode
         if batchsize is None:
@@ -141,3 +141,5 @@ class NeuralSolver(Solver):
 
         #restore the sampler number of step
         self.sampler.nstep = _nstep_save
+
+        return pos
