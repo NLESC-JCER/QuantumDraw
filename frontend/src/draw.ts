@@ -202,6 +202,28 @@ function reset() {
     render();
 }
 
+function clear_canvas() {
+    userGuessAttemptNumber = 0;
+
+    linechartData = {
+        datasets: [{
+            label: 'User scores',
+            data: [],
+        }, {
+            label: 'AI scores',
+            data: [],
+        }],
+    };
+    window.linechart.data = linechartData;
+    aiguess = []
+    strokes = []
+    // Clear and Rerender
+    document.querySelector('.line-chart>g:first-child').innerHTML = '';
+    window.linechart.render();
+
+    render();
+}
+
 window.addEventListener('load', () => {
     reset();
 });
@@ -288,6 +310,7 @@ interface Message {
 }
 
 function sendResetMessage(level: number = 0) {
+    clear_canvas()
     let message: Message = {
         type: 'reset',
         data: level

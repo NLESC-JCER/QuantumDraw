@@ -72,7 +72,7 @@ class SocketHandler(websocket.WebSocketHandler):
             if not self.ai_task:
                 self.ai_task = asyncio.get_event_loop().create_task(loop())
 
-        print('message', decoded_message)
+        # print('message', decoded_message)
 
     def open(self):
         print('ws open')
