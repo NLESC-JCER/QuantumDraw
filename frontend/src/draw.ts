@@ -20,6 +20,7 @@ let userGuessAttemptNumber = 0;
 
 let userscore = 0;
 let aiscore = 0;
+let showai = true;
 
 let startTime = 0;
 
@@ -52,6 +53,9 @@ morse_button.addEventListener('click', () => sendResetMessage(1))
 
 let double_button: HTMLElement = document.getElementById('double_button');
 double_button.addEventListener('click', () => sendResetMessage(2))
+
+let toggle_ai_button: HTMLElement = document.getElementById('toggle_ai_button');
+toggle_ai_button.addEventListener('click', () => toggle_ai())
 
 const strokes = [];
 let potential = [];
@@ -114,17 +118,19 @@ function render() {
         context.stroke();
     }
 
-    for (const aiStroke of aiguess) {
-        context.beginPath();
-        curve.lineStart();
-        for (const point of aiStroke) {
-            curve.point(x(point[0]), y(point[1]));
+    if (showai) {
+        for (const aiStroke of aiguess) {
+            context.beginPath();
+            curve.lineStart();
+            for (const point of aiStroke) {
+                curve.point(x(point[0]), y(point[1]));
+            }
+            if (aiStroke.length === 1) curve.point(aiStroke[0][0], aiStroke[0][1]);
+            curve.lineEnd();
+            context.lineWidth = AILINEWIDTH;
+            context.strokeStyle = AISTYLE;
+            context.stroke();
         }
-        if (aiStroke.length === 1) curve.point(aiStroke[0][0], aiStroke[0][1]);
-        curve.lineEnd();
-        context.lineWidth = AILINEWIDTH;
-        context.strokeStyle = AISTYLE;
-        context.stroke();
     }
 
     // context.canvas.value = strokes;
@@ -222,6 +228,10 @@ function clear_canvas() {
     window.linechart.render();
 
     render();
+}
+
+function toggle_ai() {
+    showai = !showai
 }
 
 window.addEventListener('load', () => {
