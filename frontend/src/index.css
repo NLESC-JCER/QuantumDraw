@@ -52,7 +52,7 @@ a {
   margin-left: 10px;
   margin-right: 10px;
   background-position: center;
-  background-image: url(images/quantum_logo.png);
+  /* background-image: url(images/quantum_logo.png); */
   background-repeat: no-repeat;
   background-size: contain;
 }
