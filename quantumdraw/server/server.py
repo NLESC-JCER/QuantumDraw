@@ -23,7 +23,8 @@ class SocketHandler(websocket.WebSocketHandler):
 
         self.ipot = 1
         self.current_level_potential = potentials[self.ipot]
-        self.sleep_time = 0.1
+        self.default_sleep_time = 0.5
+        self.sleep_time = self.default_sleep_time
 
     def check_origin(self, origin):
         return True
@@ -34,14 +35,21 @@ class SocketHandler(websocket.WebSocketHandler):
         if decoded_message['type'] == 'ping':
             self.write_message(json.dumps({'type': 'pong'}))
 
+        if decoded_message['type'] == 'speed':
+            print('change speed')
+            if self.sleep_time == self.default_sleep_time:
+                self.sleep_time = 0.0
+            else:
+                self.sleep_time = self.default_sleep_time
+
         if decoded_message['type'] == 'reset':
             if self.ai_task:
                 self.ai_task.cancel()
                 self.ai_task = None
 
             self.current_level_potential = potentials[decoded_message['data']]
-            print(self.current_level_potential)
-
+            
+            #print(self.current_level_potential)
             # self.current_level_pot = None
             # if decoded_message['data']:
                 

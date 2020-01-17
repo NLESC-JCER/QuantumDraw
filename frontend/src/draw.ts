@@ -57,6 +57,9 @@ double_button.addEventListener('click', () => sendResetMessage(2))
 let toggle_ai_button: HTMLElement = document.getElementById('toggle_ai_button');
 toggle_ai_button.addEventListener('click', () => toggle_ai())
 
+let toggle_ai_speed_button: HTMLElement = document.getElementById('toggle_ai_speed_button');
+toggle_ai_speed_button.addEventListener('click', () => toggle_ai_speed())
+
 const strokes = [];
 let potential = [];
 let origin = [];
@@ -139,7 +142,7 @@ function render() {
 
 var zeros = d3.scaleLinear()
     .domain([1, -1])
-    .range([500, 500]);
+    .range([HEIGHT/2, HEIGHT/2]);
 
 
 var x = d3.scaleLinear()
@@ -233,6 +236,14 @@ function clear_canvas() {
 function toggle_ai() {
     showai = !showai
     render()
+}
+
+function toggle_ai_speed() {
+    let message: Message = {
+        type: 'speed',
+        data: true
+    };
+    socket.send(JSON.stringify(message));
 }
 
 window.addEventListener('load', () => {
