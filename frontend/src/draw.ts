@@ -192,7 +192,13 @@ function reset() {
 }
 
 window.addEventListener('load', () => {
-    reset();
+    if (socket.readyState === socket.CONNECTING) {
+    socket.onopen = function() {
+      reset();
+    };
+    } else {
+      reset();
+   }
 });
 
 function updateUserScore(time: number, value: number) {
