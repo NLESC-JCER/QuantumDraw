@@ -6,8 +6,9 @@ import './index.css';
 declare const window: any;
 
 const root = `${window.location.host}${window.location.pathname}`;
-const websocketURL = `ws://${root}ws`;
-const socket = window.socket = new WebSocket('ws://localhost:8888/ws');
+const websocketURL = `wss://${root}ws`;
+const socket = window.socket = new WebSocket('wss://quantumdraw.ci-nlesc.surf-hosted.nl/ws');
+
 // const socket = window.socket = new WebSocket(websocketURL);
 
 let canvas: HTMLCanvasElement;
