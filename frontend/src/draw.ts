@@ -193,9 +193,9 @@ function reset() {
 
 window.addEventListener('load', () => {
     if (socket.readyState === socket.CONNECTING) {
-    socket.onopen = function() {
-      reset();
-    };
+      socket.onopen = function() {
+        reset();
+      };
     } else {
       reset();
    }
