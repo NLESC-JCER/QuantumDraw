@@ -25,5 +25,6 @@ def level3(pos):
 
 potentials = [
     level1,
-    lambda pos: 0.5*pos**2
+    level2,
+    level3
 ]

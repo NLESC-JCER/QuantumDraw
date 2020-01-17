@@ -14,63 +14,67 @@
 </head>
 
 <body>
-    <main>
-        <div class="wrapper">
-
-            <div id="splash_view" class="visible">
-                <div id="banner">
-                    <div id="logo">
-                        <img src="images/logo_escience_center.png" />
-                    </div>
-                    <nlesc-social></nlesc-social>
-                </div>
-                <div id="splashView_logo"></div>
-                <div id="splashView_tagline">
-                    <span class="tagline_font"> Can you solve quantum mechanical problems faster than a neural
-                        network?</span>
-                    <button id="start_button" class="button_with_shadow">Let's start</button>
-                </div>
-            </div>
-
-            <div id="ready_view" class="visible">
-                <div id="banner">
-                    <div id="logo">
-                        <img src="images/logo_escience_center.png" />
-                    </div>
-                    <nlesc-social></nlesc-social>
-                </div>
-                
-                <div id="ready_tagline">
-                    <span class="tagline_font"> Solve the harmonic oscillator in less than 60 sec.</span>
-                    <button id="ready_button" class="button_with_shadow">Ready ?</button>
-                </div>
-            </div>
-
-            <div id="game_view">
-                <div class="top_bar">
-                    <div class='games_button'>
-                        <button id="close_game_button" class="button_with_shadow">X</button>
-                        <button id="next_button" class="button_with_shadow">Next</button>
-                    </div>
-                    <div class='scores'>
-                        <p class='userScoreP'>User score now: 0</p>
-                        <p class='userAttemptP'>User attempt: 0</p>
-                        <p class='aiScoreP'>AI score now: 0</p>
-                        <p class='userTimeP'>User time: 0</p>
-                    </div>
-                </div>
-
-                <div id='canvas_view'>
-                    <div id='line-chart-div'>
-                        <svg class='line-chart'></svg>
-                    </div>
-                </div>
-            </div>
-
+    <header id="banner">
+        <div id="logo">
+            <img src="images/logo_escience_center.png" />
         </div>
-    </main>
+        <nlesc-social></nlesc-social>
+    </header>
+    <div class="container">
+        <section id="splash_view" class="visible">
+            <div id="splashView_logo"></div>
+            <div class="tagline">
+                <span class="tagline_font"> Can you solve quantum mechanical problems faster than a neural
+                    network?</span>
+                <button id="start_button" class="button_with_shadow">Let's start</button>
+            </div>
+        </section>
+        <section id="ready_view">
+            <div class="cards">
+                <article class="game_card">
+                    <div class="tagline">
+                        <span class="tagline_font"> Solve the harmonic oscillator in less than 60 sec.</span>
+                        <button class="button_with_shadow">Ready ?</button>
+                    </div>
+                </article>
+                <article class="game_card">
+                    <div class="tagline">
+                        <span class="tagline_font"> Solve the Morse Potential in less than 60 sec.</span>
+                        <button class="button_with_shadow">Ready ?</button>
+                    </div>
+                </article>
+                <article class="game_card">
+                    <div class="tagline">
+                        <span class="tagline_font"> Solve the Double well in less than 60 sec.</span>
+                        <button class="button_with_shadow">Ready ?</button>
+                    </div>
+                </article>
+            </div>
+        </section>
+        <section id="game_view">
+            <div class="top_bar">
+                <div class='games_button'>
+                    <button id="close_game_button" class="button_with_shadow">X</button>
+                </div>
+                <div class='scores'>
+                    <p class='userScoreP'>User score now: 0</p>
+                    <p class='userAttemptP'>User attempt: 0</p>
+                    <p class='aiScoreP'>AI score now: 0</p>
+                    <p class='userTimeP'>User time: 0</p>
+                </div>
+            </div>
+
+            <div id='canvas_view'>
+                <div id='line-chart-div'>
+                    <svg class='line-chart'></svg>
+                </div>
+            </div>
+        </section>
+    </div>
+
     <script src="index.ts" defer></script>
     <script src="draw.ts" defer></script>
+
 </body>
 
 </html>
