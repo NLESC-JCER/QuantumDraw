@@ -1,5 +1,6 @@
 import torch
 from torch import optim
+import time
 
 from quantumdraw.sampler.metropolis import Metropolis
 from quantumdraw.solver.neural_solver import NeuralSolver
@@ -23,7 +24,7 @@ def get_user_score(user_guess, current_pot):
     return usolver.get_score()
 
 
-def get_ai_score(current_pot, max_iterations=100):
+def get_ai_score(current_pot, max_iterations=100, duration=30):
     sampler = Metropolis(nwalkers=500, nstep=2000,
                          step_size=0.5, domain=domain)
 
@@ -43,7 +44,8 @@ def get_ai_score(current_pot, max_iterations=100):
     pos = solver.run(1)
     solver.sampler.nstep = solver.resample.resample
 
-    for _ in range(0, max_iterations):
+    end_time = time.time() + duration
+    while time.time() < end_time:
         pos = solver.run(1, pos=pos)
         num_samples = 50
         low_x = -5

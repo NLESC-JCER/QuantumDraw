@@ -91,7 +91,7 @@ class NeuralSolver(Solver):
         clipper = ZeroOneClipper()
     
         cumulative_loss = []
-        min_loss = 1E3
+        
 
         for n in range(nepoch):
             #print('----------------------------------------')
