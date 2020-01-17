@@ -109,7 +109,8 @@ class Solver(object):
         Vx = np.diag(self.wf.nuclear_potential(x).detach().numpy().flatten())
         K = -0.5 / dx2.numpy() * ( np.eye(npts,k=1) + np.eye(npts,k=-1) - 2. * np.eye(npts))
         l, U = np.linalg.eigh(K+Vx)
-        return {'x':x.detach().numpy(),'y':U[:,0],'max':np.max(U[:,0])}
+        sol = np.abs(U[:,0])
+        return {'x':x.detach().numpy(),'y':sol,'max':np.max(sol)}
 
     def get_score(self):
         

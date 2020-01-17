@@ -20,7 +20,10 @@ class SocketHandler(websocket.WebSocketHandler):
     def __init__(self, application: tornado.web.Application, request: httputil.HTTPServerRequest,
                  **kwargs: Any) -> None:
         super().__init__(application, request, **kwargs)
-        self.current_level_potential = potentials[0]
+
+        self.ipot = 1
+        self.current_level_potential = potentials[self.ipot]
+        self.sleep_time = 0.1
 
     def check_origin(self, origin):
         return True
@@ -56,18 +59,18 @@ class SocketHandler(websocket.WebSocketHandler):
             self.write_message(json.dumps({'type': 'user_score', 'score': score}))
 
             async def loop():
-                iterator = get_ai_score(potentials[0])
+                iterator = get_ai_score(self.current_level_potential)
                 for step in iterator:
                     points = step[0]
                     score = step[1]
                     data = json.dumps({'type': 'ai_score', 'score': score, 'points': points})
                     self.write_message(data)
-                    await asyncio.sleep(0.1)
+                    await asyncio.sleep(self.sleep_time)
 
             if not self.ai_task:
                 self.ai_task = asyncio.get_event_loop().create_task(loop())
 
-            # print('message', decoded_message)
+            print('message', decoded_message)
 
     def open(self):
         print('ws open')
