@@ -232,6 +232,7 @@ function clear_canvas() {
 
 function toggle_ai() {
     showai = !showai
+    render()
 }
 
 window.addEventListener('load', () => {
