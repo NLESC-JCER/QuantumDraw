@@ -110,6 +110,8 @@ class NeuralSolver(Solver):
                 loss.backward()
                 self.opt.step()
 
+                self.check_parameters()
+
                 if self.wf.fc.clip:
                     self.wf.fc.apply(clipper)
                 
@@ -143,3 +145,15 @@ class NeuralSolver(Solver):
         self.sampler.nstep = _nstep_save
 
         return pos
+
+
+    def check_parameters(self):
+
+        check_nan =  torch.isnan(self.wf.rbf.centers.data)
+        self.wf.rbf.centers.data[check_nan] = 0.
+
+        check_nan =  torch.isnan(self.wf.rbf.sigma.data)
+        self.wf.rbf.sigma.data[check_nan] = 1.0
+
+        check_nan =  torch.isnan(self.wf.fc.weight.data)
+        self.wf.fc.weight.data[check_nan] = 0.
