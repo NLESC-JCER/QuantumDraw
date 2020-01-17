@@ -9,7 +9,7 @@ let start_button: HTMLElement = document.getElementById('start_button');
 
 let ready_button: HTMLCollectionOf<Element> = ready_view.getElementsByClassName('button_with_shadow');
 let close_game_button: HTMLElement = document.getElementById('close_game_button');
-
+let change_level_button: HTMLElement = document.getElementById('change_level_button');
 let tag_line: HTMLElement = document.getElementById('ready_tagline')
 
 // Add Event Listeners
@@ -18,6 +18,7 @@ Array.from(ready_button).forEach(function (element) {
     element.addEventListener('click', showGameView);
 });
 close_game_button.addEventListener('click', () => hideGameView())
+change_level_button.addEventListener('click', () => changeLevelView())
 
 // Functions
 function showReadyView() {
@@ -32,9 +33,18 @@ function showGameView() {
     ready_view.classList.remove('visible');
     splash_view.classList.remove('visible');
 }
-function hideGameView() {
+
+function changeLevelView() {
     banner.classList.remove('shrink');
     game_view.classList.remove('visible');
     line_chart.classList.remove('visible-chart');
     ready_view.classList.add('visible');
+}
+
+function hideGameView() {
+    banner.classList.remove('shrink');
+    game_view.classList.remove('visible');
+    line_chart.classList.remove('visible-chart');
+    // ready_view.classList.add('visible');
+    splash_view.classList.add('visible');
 }
