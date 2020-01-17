@@ -12,6 +12,7 @@ def level2(pos):
         return 0.25*(torch.exp(-2.*(pos+2)) - 2.*torch.exp(-(pos+2))).view(-1, 1) 
     else:
         return 0.25*(np.exp(-2.*(pos+2)) - 2.*np.exp(-(pos+2))) 
+        
 def level3(pos):
     h = 0.75
     c = 0.05

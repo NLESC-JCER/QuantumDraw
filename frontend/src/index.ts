@@ -6,6 +6,7 @@ let banner: HTMLElement = document.getElementById('banner');
 
 let line_chart: HTMLElement = document.getElementById('line-chart-div');
 let start_button: HTMLElement = document.getElementById('start_button');
+
 let ready_button: HTMLCollectionOf<Element> = ready_view.getElementsByClassName('button_with_shadow');
 let close_game_button: HTMLElement = document.getElementById('close_game_button');
 
@@ -23,7 +24,6 @@ function showReadyView() {
     ready_view.classList.add('visible');
     splash_view.classList.remove('visible');
 }
-
 
 function showGameView() {
     banner.classList.add('shrink');

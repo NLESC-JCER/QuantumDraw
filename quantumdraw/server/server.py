@@ -39,10 +39,12 @@ class SocketHandler(websocket.WebSocketHandler):
                 self.ai_task.cancel()
                 self.ai_task = None
 
-            # self.current_level_pot = None
-            if decoded_message['data']:
-                self.current_level_potential = potentials[decoded_message['data']]
+            self.current_level_potential = potentials[decoded_message['data']]
+            print(self.current_level_potential)
 
+            # self.current_level_pot = None
+            # if decoded_message['data']:
+                
             num_samples = 50
             low_x = -5
             high_x = 5
@@ -70,7 +72,7 @@ class SocketHandler(websocket.WebSocketHandler):
             if not self.ai_task:
                 self.ai_task = asyncio.get_event_loop().create_task(loop())
 
-            print('message', decoded_message)
+        print('message', decoded_message)
 
     def open(self):
         print('ws open')

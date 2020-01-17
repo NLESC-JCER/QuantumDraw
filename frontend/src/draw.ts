@@ -44,6 +44,15 @@ canvas.height = HEIGHT;
 document.getElementById('canvas_view').appendChild(canvas);
 context = canvas.getContext("2d");
 
+let harm_button: HTMLElement = document.getElementById('harm_button');
+harm_button.addEventListener('click', () => sendResetMessage(0))
+
+let morse_button: HTMLElement = document.getElementById('morse_button');
+morse_button.addEventListener('click', () => sendResetMessage(1))
+
+let double_button: HTMLElement = document.getElementById('double_button');
+double_button.addEventListener('click', () => sendResetMessage(2))
+
 const strokes = [];
 let potential = [];
 let origin = [];
