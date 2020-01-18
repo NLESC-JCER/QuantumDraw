@@ -21,6 +21,7 @@
         <nlesc-social></nlesc-social>
     </header>
     <div class="container">
+
         <section id="splash_view" class="visible">
             
             <div id="splashView_logo"><img src="images/quantum_logo.png" /></div>
@@ -30,6 +31,7 @@
                 <button id="start_button" class="button_with_shadow">Let's start</button>
             </div>
         </section>
+
         <section id="ready_view">
             <div class="cards">
                 <article class="game_card">
@@ -52,6 +54,7 @@
                 </article>
             </div>
         </section>
+
         <section id="game_view">
             <div class="top_bar">
                 
@@ -62,12 +65,24 @@
                     <button id="toggle_ai_speed_button" class="button_with_shadow">change AI speed</button>
                 </div>
 
-                <!-- <div class='scores'>
-                    <p class='userScoreP'>User score now: 0</p>
-                    <p class='userAttemptP'>User attempt: 0</p>
-                    <p class='aiScoreP'>AI score now: 0</p>
-                    <p class='userTimeP'>User time: 0</p>
-                </div> -->
+            </div>
+
+            <!-- The Modal -->
+            <div id="myModal" class="modal">
+
+                <!-- Modal content -->
+                <div class="modal-content">
+                <div id = "modal_header" class="modal-header">
+                    <span class="close_modal">&times;</span>
+                    <h2></h2>
+                </div>
+                <div id = "modal_body" class="modal-body">
+                    <p>undefined</p>
+                </div>
+                <div id = "modal_footer" class="modal-footer">
+                    <h3></h3>
+                </div>
+                </div>  
             </div>
 
             <div id='canvas_view'>
@@ -75,8 +90,13 @@
                     <svg class='line-chart'></svg>
                 </div>
             </div>
+
         </section>
+
     </div>
+
+
+
 
     <script src="index.ts" defer></script>
     <script src="draw.ts" defer></script>

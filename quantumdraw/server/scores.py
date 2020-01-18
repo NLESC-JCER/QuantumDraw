@@ -24,7 +24,7 @@ def get_user_score(user_guess, current_pot):
     return usolver.get_score()
 
 
-def get_ai_score(current_pot, max_iterations=100, duration=30):
+def get_ai_score(current_pot, max_iterations=100, duration=1):
     sampler = Metropolis(nwalkers=500, nstep=2000,
                          step_size=0.5, domain=domain)
 
@@ -57,3 +57,5 @@ def get_ai_score(current_pot, max_iterations=100, duration=30):
         y_points = y.detach().numpy().T[0].tolist()
         points = list(zip(x_points, y_points))
         yield points, solver.get_score()
+
+    

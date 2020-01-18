@@ -76,9 +76,11 @@ class SocketHandler(websocket.WebSocketHandler):
                     data = json.dumps({'type': 'ai_score', 'score': score, 'points': points})
                     self.write_message(data)
                     await asyncio.sleep(self.sleep_time)
+                self.write_message(json.dumps({'type': 'game_over'}))
 
             if not self.ai_task:
                 self.ai_task = asyncio.get_event_loop().create_task(loop())
+                
 
         # print('message', decoded_message)
 

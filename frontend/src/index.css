@@ -156,19 +156,7 @@ a {
   height: 100vh;
 }
 
-/* #banner {
-  display: flex;
-  align-items: center;
-  justify-content: space-around;
-  background-image: url(images/eScience_banner.png);
-  background-repeat: no-repeat;
-  background-position: center top;
-  background-size: cover;
-  background-color: #00a3e3;
-  height: 100px;
-  width: 100%;
-  transition: height 1s;
-} */
+
 
 .top_bar {
   display: flex;
@@ -253,6 +241,8 @@ canvas {
   transform: scale3d(1.2, 1.2, 1.2);
   z-index: 10;
 }
+
+
 @media screen and (device-width: 1024px) and (-webkit-min-device-pixel-ratio: 1) {
   #canvas_view {
     align-items: center;
@@ -293,4 +283,97 @@ canvas {
   #line-chart-div {
     width: 50%;
   }
+}
+
+
+
+
+/* The Modal (background) */
+.modal {
+  display: none; /* Hidden by default */
+  position: fixed; /* Stay in place */
+  z-index: 1; /* Sit on top */
+  left: 0;
+  top: 0;
+  width: 100%; /* Full width */
+  height: 100%; /* Full height */
+  overflow: auto; /* Enable scroll if needed */
+  background-color: rgb(0,0,0); /* Fallback color */
+  background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+  -webkit-animation-name: fadeIn; /* Fade in the background */
+  -webkit-animation-duration: 0.4s;
+  animation-name: fadeIn;
+  animation-duration: 0.4s
+}
+
+/* Modal Content */
+.modal-content {
+  position: fixed;
+  bottom: 0;
+  background-color: #fefefe;
+  width: 100%;
+  -webkit-animation-name: slideIn;
+  -webkit-animation-duration: 0.4s;
+  animation-name: slideIn;
+  animation-duration: 0.4s
+}
+
+
+/* The Close Button */
+.close_modal {
+  color: white;
+  float: right;
+  font-size: 28px;
+  font-weight: bold;
+}
+
+.close_modal:hover,
+.close_modal:focus {
+  color: #000;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.modal-header {
+  padding: 2px 16px;
+  background-color: #5cb85c;
+  color: white;
+  font-family: "Lakki Reddy", cursive;
+  font-size: 28px;
+  font-weight: bold;
+}
+
+.modal-body {
+  padding: 2px 16px;
+  font-family: "Lakki Reddy", cursive;
+  font-size: 28px;
+  font-weight: bold;
+
+}
+
+.modal-footer {
+  padding: 2px 16px;
+  background-color: #5cb85c;
+  color: white;
+}
+
+/* Add Animation */
+@-webkit-keyframes slideIn {
+  from {bottom: -300px; opacity: 0} 
+  to {bottom: 0; opacity: 1}
+}
+
+@keyframes slideIn {
+  from {bottom: -300px; opacity: 0}
+  to {bottom: 0; opacity: 1}
+}
+
+@-webkit-keyframes fadeIn {
+  from {opacity: 0} 
+  to {opacity: 1}
+}
+
+@keyframes fadeIn {
+  from {opacity: 0} 
+  to {opacity: 1}
 }

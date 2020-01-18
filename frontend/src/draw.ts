@@ -22,6 +22,9 @@ let userscore = 0;
 let aiscore = 0;
 let showai = true;
 
+let best_userscore = 0;
+let best_aiscore = 0;
+
 let startTime = 0;
 
 const HEIGHT = parseInt(d3.select('#canvas_view').style('width'), 10);
@@ -192,7 +195,8 @@ function reset() {
     strokes.length = 0;
     sendResetMessage(0);
     userGuessAttemptNumber = 0;
-
+    best_userscore = 0;
+    best_aiscore = 0;
     linechartData = {
         datasets: [{
             label: 'User scores',
@@ -216,10 +220,10 @@ function clear_canvas() {
 
     linechartData = {
         datasets: [{
-            label: 'User scores',
+            label: 'You',
             data: [],
         }, {
-            label: 'AI scores',
+            label: 'AI',
             data: [],
         }],
     };
@@ -263,6 +267,9 @@ function updateUserScore(time: number, value: number) {
     userGuessAttemptNumber++;
 
     userscore = value * 1000;
+    if (userscore > best_userscore) {
+        best_userscore = userscore
+    }
 
     userScoreP.text("User score now: " + userscore.toString());
     userAttemptP.text("User attempt: " + userGuessAttemptNumber.toString());
@@ -283,7 +290,9 @@ function updateAIScore(time: number, value: number) {
     let displayTime = (time - startTime) / 1000;
 
     aiscore = value * 1000;
-
+    if (aiscore > best_aiscore) {
+        best_aiscore = aiscore
+    }
     aiscoreP.text("AI score now: " + aiscore.toString());
 
     linechartData.datasets[1].data.push({ x: displayTime, y: aiscore });
@@ -309,22 +318,64 @@ socket.addEventListener('message', function (event) {
         potential = [parsedData.data];
         origin = [parsedData.data];
         render();
+
     } else if (eventType === 'ai_score') {
         if (userGuessAttemptNumber != 0) {
             updateAIScore(time, parsedData.score);
             aiguess = [parsedData.points];
             render();
         }
+
     } else if (eventType === 'user_score') {
         updateUserScore(time, parsedData.score);
+    } else if (eventType === 'game_over') {
+        showai = true;
+        render();
+        showModal();
     }
 })
-//
-// socket.addEventListener("gameover", function(event: any) {
-//     const time = JSON.parse(event.data).time;
-//     aiscore = JSON.parse(event.data).aiscore;
-//     userscore = JSON.parse(event.data).userscore;
-// });
+
+function showModal() {
+
+    var modal = document.getElementById("myModal");
+
+    // Get the <span> element that closes the modal
+    var span = document.getElementsByClassName("close_modal")[0];  
+
+    // When the user clicks on <span> (x), close the modal
+    span.onclick = function() {
+        modal.style.display = "none";
+    }
+
+    // When the user clicks anywhere outside of the modal, close it
+    window.onclick = function(event) {
+        if (event.target == modal) {
+            modal.style.display = "none";
+        }
+    }
+
+    var header = document.getElementById("modal_header");
+    var footer = document.getElementById("modal_footer");
+    var body = document.getElementById("modal_body");
+    
+    header.style.backgroundColor = "black"
+    footer.style.backgroundColor = "black"
+
+    if (best_aiscore > best_userscore){
+        // change modal style
+        header.style.backgroundColor = "red"
+        footer.style.backgroundColor = "red"
+        body.innerHTML = "Booooo !!! You Loose !!! "
+        modal.style.display = "block";
+    }
+    else {
+        // change modal style
+        header.style.backgroundColor = "#5cb85c"
+        footer.style.backgroundColor = "#5cb85c"
+        body.innerHTML = "Yaaay !!! You Win !!!"
+        modal.style.display = "block";
+    }
+}
 
 interface Message {
     type: string;
@@ -338,6 +389,8 @@ function sendResetMessage(level: number = 0) {
         data: level
     };
     socket.send(JSON.stringify(message));
+    best_userscore = 0
+    best_aiscore = 0
 }
 
 function sendGuess(data: Array<Array<number>>) {
@@ -353,7 +406,7 @@ window.addEventListener('load', () => {
 
     window.linechart = new chartXkcd.XY(
         svg, {
-        title: 'Your score VS AI score', // optional
+        // title: 'Your score VS AI score', // optional
         xLabel: 'Time in seconds', // optional
         yLabel: 'Score', // optional
         data: linechartData,
@@ -362,12 +415,16 @@ window.addEventListener('load', () => {
             yTickCount: 10,
             dotSize: 1,
             showLine: true,
-            legendPosition: chartXkcd.config.positionType.upLeft
+            legendPosition: chartXkcd.config.positionType.downRight,
+            showLegend: false,
+            unxkcdify: true,
         }
     });
     canvas.height = parseInt(d3.select('.line-chart').style('height'), 10);
 })
+
 window.addEventListener("orientationchange", function () {
     window.location.reload();
 });
+
 
