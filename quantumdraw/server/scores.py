@@ -62,7 +62,7 @@ def get_ai_score(current_pot, max_iterations=100, duration=30):
 
     end_time = time.time() + duration
     while time.time() < end_time:
-        pos = solver.run(1, pos=pos)
+        pos = solver.run(1, pos=pos, with_tqdm=False)
         num_samples = 50
         low_x = -5
         high_x = 5

@@ -48,7 +48,9 @@ class NeuralSolver(Solver):
             }, filename)
         return loss
 
-    def run(self, nepoch, pos = None, batchsize=None, save='model.pth',  loss='variance', plot = None):
+    def run(self, nepoch, pos = None, batchsize=None, 
+            save='model.pth',  loss='variance', plot = None,
+            with_tqdm=True):
 
         '''Train the model.
 
@@ -70,7 +72,7 @@ class NeuralSolver(Solver):
         self.save_model = save
 
         # sample the wave function
-        pos = self.sample(pos=pos, ntherm=self.resample.ntherm)
+        pos = self.sample(pos=pos, ntherm=self.resample.ntherm, with_tqdm=with_tqdm)
 
         # determine the batching mode
         if batchsize is None:
@@ -106,6 +108,10 @@ class NeuralSolver(Solver):
                 loss = self.loss(lpos)
                 cumulative_loss += loss
 
+                if torch.isnan(loss):
+                    print('ooops ran into an issue')
+                    continue
+
                 self.opt.zero_grad()
                 loss.backward()
                 self.opt.step()
@@ -122,15 +128,15 @@ class NeuralSolver(Solver):
             #     min_loss = self.save_checkpoint(n,cumulative_loss,self.save_model)
                  
             # get the observalbes
-            self.get_observable(self.obs_dict,pos)
-            print('loss %f' %(cumulative_loss))
-            print('variance : %f' %np.var(self.obs_dict['local_energy'][-1]))
-            print('energy : %f' %np.mean(self.obs_dict['local_energy'][-1]) )   
+            # self.get_observable(self.obs_dict,pos)
+            # print('loss %f' %(cumulative_loss))
+            # print('variance : %f' %np.var(self.obs_dict['local_energy'][-1]))
+            # print('energy : %f' %np.mean(self.obs_dict['local_energy'][-1]) )   
             print('score : %f' %self.get_score() )   
-            print('----------------------------------------')
+            # print('----------------------------------------')
             
             # resample the data
-            if (n%self.resample.resample_every == 0) or (n == nepoch-1):
+            if (n%self.resample.resample_every == 0): # or (n == nepoch-1):
                 if self.resample.resample_from_last:
                     pos = pos.clone().detach()
                 else:

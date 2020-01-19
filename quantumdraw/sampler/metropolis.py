@@ -50,11 +50,11 @@ class Metropolis(object):
             fx[fx == 0] = 1E-6
             POS = []
             rate = 0
-
+            
             if with_tqdm:
                 rng = tqdm(range(self.nstep))
             else:
-                rng = range(self.nstep)
+                rng = (range(self.nstep))
 
             for istep in rng:
 
