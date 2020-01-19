@@ -41,24 +41,5 @@ class UserSolver(Solver):
         
         return {'x':self.solution['x'].tolist(), 'y' : (scale * delta).tolist()}
 
-    def feedback_v2(self):
-        '''returns the segment of pos/neg values'''
-
-        # user data
-        x = self.wf.data['x'][1:-2].copy()
-        y = self.wf.data['y'][1:-2].copy()
-        try:
-            yuser_scale = y / np.max(y)
-        except:
-            yuser_scale = y
-
-        # solution at those points
-        ysol = self.solinterp(x)
-
-        # get index of +/- segments
-        idx_pos = np.where(yuser_scale > ysol)
-        idx_neg = np.where(yuser_scale < ysol)
-
-        return {'x':x[idx_pos].tolist(), 'y': y[idx_pos].tolist()}, {'x':x[idx_neg].tolist(), 'y': y[idx_neg].tolist()} 
 
 

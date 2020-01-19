@@ -34,6 +34,7 @@ def level4(pos):
 
 
 def level5(pos):
+    '''H2+ type of thing.'''
     k=0.5*1E-1
     if isinstance(pos,torch.Tensor):
         return -k/torch.abs(pos-2.5) + -k/torch.abs(pos+2.5)

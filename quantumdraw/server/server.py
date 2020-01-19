@@ -5,7 +5,7 @@ import asyncio
 from typing import Any
 from tornado import websocket, web, ioloop, httputil
 from quantumdraw.server.levels import potentials
-from quantumdraw.server.scores import get_ai_score, get_user_score
+from quantumdraw.server.scores import get_ai_score, get_user_score, get_solution
 
 
 class IndexHandler(web.RequestHandler):
@@ -91,7 +91,10 @@ class SocketHandler(websocket.WebSocketHandler):
                     data = json.dumps({'type': 'ai_score', 'score': score, 'points': points})
                     self.write_message(data)
                     await asyncio.sleep(self.sleep_time)
-                self.write_message(json.dumps({'type': 'game_over'}))
+                sol = get_solution(self.current_level_potential)
+
+                self.write_message(json.dumps({'type': 'game_over', 'points': sol}))
+                #self.write_message(json.dumps({'type': 'game_over'}))
 
             if not self.ai_task:
                 self.ai_task = asyncio.get_event_loop().create_task(loop())
