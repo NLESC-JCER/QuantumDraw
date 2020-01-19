@@ -3,6 +3,7 @@ import * as chartXkcd from 'chart.xkcd';
 import XY from './XY';
 import './index.css';
 import {win_sentence,loose_sentence} from './catch_phrase'
+import { line } from 'd3';
 
 
 declare const window: any;
@@ -31,8 +32,14 @@ let best_aiscore = 0;
 
 let startTime = 0;
 
-const HEIGHT = parseInt(d3.select('#canvas_view').style('width'), 10);
+// const HEIGHT = parseInt(d3.select('#canvas_view').style('width'), 10);
 const WIDTH = parseInt(d3.select('#canvas_view').style('width'), 10) - 40;
+
+console.log(screen.height)
+console.log(d3.select('#top_bar_id').style('height'))
+const banner_height = parseInt(d3.select('#banner').style('height'), 10);
+const HEIGHT = (screen.height-banner_height)/2
+
 
 const POTLINEWIDTH = 10;
 const POTSTYLE = "#993366";
@@ -94,7 +101,7 @@ let linechartData = {
 };
 
 // the hint filled 
-var area = d3.area().context(context).y0(HEIGHT/2);
+var area = d3.area().context(context).y0(4*HEIGHT/5);
 
 (window as any).strokes = strokes;
 const curve = d3.curveBasis(context);
@@ -208,8 +215,8 @@ function render() {
 }
 
 var zeros = d3.scaleLinear()
-    .domain([1, -1])
-    .range([HEIGHT/2, HEIGHT/2]);
+    .domain([1, -0.25])
+    .range([4*HEIGHT/5, 4*HEIGHT/5]);
 
 
 var x = d3.scaleLinear()
@@ -220,7 +227,7 @@ var x = d3.scaleLinear()
 // with .domain([1,0]) the bottom of the harmonic
 // oscillator pot doesnt show ....    
 var y = d3.scaleLinear()
-    .domain([1, -1.])
+    .domain([1, -0.25])
     .range([-1, HEIGHT + 1]);
 
 
@@ -500,7 +507,9 @@ window.addEventListener('load', () => {
             unxkcdify: true,
         }
     });
-    canvas.height = parseInt(d3.select('.line-chart').style('height'), 10);
+    // console.log(canvas.height)
+    // canvas.height = parseInt(d3.select('.line-chart').style('height'), 10);
+    // console.log(canvas.height)
 })
 
 window.addEventListener("orientationchange", function () {
