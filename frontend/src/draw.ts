@@ -2,6 +2,8 @@ import * as d3 from 'd3';
 import * as chartXkcd from 'chart.xkcd';
 import XY from './XY';
 import './index.css';
+import {win_sentence,loose_sentence} from './catch_phrase'
+
 
 declare const window: any;
 
@@ -348,11 +350,11 @@ function showModal() {
     }
 
     // When the user clicks anywhere outside of the modal, close it
-    window.onclick = function(event) {
-        if (event.target == modal) {
-            modal.style.display = "none";
-        }
-    }
+    // window.onclick = function(event) {
+    //     if (event.target == modal) {
+    //         modal.style.display = "none";
+    //     }
+    // }
 
     var header = document.getElementById("modal_header");
     var footer = document.getElementById("modal_footer");
@@ -361,18 +363,22 @@ function showModal() {
     header.style.backgroundColor = "black"
     footer.style.backgroundColor = "black"
 
+    
+
     if (best_aiscore > best_userscore){
         // change modal style
         header.style.backgroundColor = "red"
         footer.style.backgroundColor = "red"
-        body.innerHTML = "Booooo !!! You Loose !!! "
+        let iphrase = Math.floor(Math.random()*loose_sentence.length)
+        body.innerHTML = loose_sentence[iphrase]
         modal.style.display = "block";
     }
     else {
         // change modal style
         header.style.backgroundColor = "#5cb85c"
         footer.style.backgroundColor = "#5cb85c"
-        body.innerHTML = "Yaaay !!! You Win !!!"
+        let iphrase = Math.floor(Math.random()*win_sentence.length)
+        body.innerHTML = win_sentence[iphrase]
         modal.style.display = "block";
     }
 }
