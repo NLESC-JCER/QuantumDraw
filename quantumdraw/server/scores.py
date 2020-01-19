@@ -23,11 +23,16 @@ def get_user_score(user_guess, current_pot):
     data = usolver.feedback()
     points = list(zip(data['x'],data['y']))
     
+    # data_pos, data_neg = usolver.feedback_v2()
+    # points_pos = list(zip(data_pos['x'],data_pos['y']))
+    # points_neg = list(zip(data_neg['x'],data_neg['y']))
+    
+    #return points, points_pos, points_neg, usolver.get_score()
     return points, usolver.get_score()
     #return usolver.get_score()
 
 
-def get_ai_score(current_pot, max_iterations=100, duration=1):
+def get_ai_score(current_pot, max_iterations=100, duration=30):
     sampler = Metropolis(nwalkers=500, nstep=2000,
                          step_size=0.5, domain=domain)
 

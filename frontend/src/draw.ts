@@ -42,11 +42,17 @@ const LINEWIDTH = 5;
 const ORISTYLE = "#808080";
 const ORILINEWIDTH = 5;
 
-const AISTYLE = "#3366ff";
-const AILINEWIDTH = 2
+const AISTYLE = "#077BA0";
+const AILINEWIDTH = 1;
 
 const HINTSTYLE = "#555555";
 const HINTLINEWIDTH = 1
+
+const NEGHINTSTYLE = "#53B2B9";
+const NEGHINTLINEWIDTH = 10
+
+const POSHINTSTYLE = "#ED5D5D";
+const POSHINTLINEWIDTH = 10
 
 canvas = document.createElement('canvas');
 canvas.width = WIDTH;
@@ -77,6 +83,8 @@ let potential = [];
 let origin = [];
 let aiguess = [];
 let hint = [];
+let hintpos = [];
+let hintneg = [];
 
 let linechartData = {
     datasets: [{
@@ -88,12 +96,69 @@ let linechartData = {
     }],
 };
 
+
+var area = d3.area().context(context).y0(HEIGHT/2);
+
 (window as any).strokes = strokes;
 const curve = d3.curveBasis(context);
 const redo = [];
 
 function render() {
     context.clearRect(0, 0, WIDTH, HEIGHT);
+
+    if (showhint) {
+
+        for (const hintStroke of hint) {
+            context.beginPath();
+            curve.lineStart();
+            var arr_tmp = []
+            for (const point of hintStroke) {
+                curve.point(x(point[0]), y(point[1]));
+                arr_tmp.push([x(point[0]), y(point[1])])
+            }
+            
+
+            if (hintStroke.length === 1) curve.point(hintStroke[0][0], hintStroke[0][1]);
+            curve.lineEnd();
+
+            context.lineWidth = HINTLINEWIDTH;
+            context.strokeStyle = HINTSTYLE;
+            context.stroke();
+            
+            context.beginPath();
+            area(arr_tmp);
+            context.fillStyle = '#DFDFDF';
+            context.strokeStyle = '#5A5B5B';
+            context.fill();
+
+        }
+
+        // for (const hintStroke of hintpos) {
+        //     context.beginPath();
+        //     curve.lineStart();
+        //     for (const point of hintStroke) {
+        //         curve.point(x(point[0]), y(point[1]));
+        //     }
+        //     if (hintStroke.length === 1) curve.point(hintStroke[0][0], hintStroke[0][1]);
+        //     curve.lineEnd();
+        //     context.lineWidth = POSHINTLINEWIDTH;
+        //     context.strokeStyle = POSHINTSTYLE;
+        //     context.stroke();
+        // }
+
+        // for (const hintStroke of hintneg) {
+        //     context.beginPath();
+        //     curve.lineStart();
+        //     for (const point of hintStroke) {
+        //         curve.point(x(point[0]), y(point[1]));
+        //     }
+        //     if (hintStroke.length === 1) curve.point(hintStroke[0][0], hintStroke[0][1]);
+        //     curve.lineEnd();
+        //     context.lineWidth = NEGHINTLINEWIDTH;
+        //     context.strokeStyle = NEGHINTSTYLE;
+        //     context.stroke();
+        // }
+    }
 
     for (const oriStroke of origin) {
         context.beginPath();
@@ -105,19 +170,6 @@ function render() {
         curve.lineEnd();
         context.lineWidth = ORILINEWIDTH;
         context.strokeStyle = ORISTYLE;
-        context.stroke();
-    }
-
-    for (const stroke of strokes) {
-        context.beginPath();
-        curve.lineStart();
-        for (const point of stroke) {
-            curve.point(point[0], point[1]);
-        }
-        if (stroke.length === 1) curve.point(stroke[0][0], stroke[0][1]);
-        curve.lineEnd();
-        context.lineWidth = LINEWIDTH;
-        context.strokeStyle = STROKESTYLE;
         context.stroke();
     }
 
@@ -149,19 +201,19 @@ function render() {
         }
     }
 
-    if (showhint) {
-        for (const hintStroke of hint) {
-            context.beginPath();
-            curve.lineStart();
-            for (const point of hintStroke) {
-                curve.point(x(point[0]), y(point[1]));
-            }
-            if (hintStroke.length === 1) curve.point(hintStroke[0][0], hintStroke[0][1]);
-            curve.lineEnd();
-            context.lineWidth = HINTLINEWIDTH;
-            context.strokeStyle = HINTSTYLE;
-            context.stroke();
+
+
+    for (const stroke of strokes) {
+        context.beginPath();
+        curve.lineStart();
+        for (const point of stroke) {
+            curve.point(point[0], point[1]);
         }
+        if (stroke.length === 1) curve.point(stroke[0][0], stroke[0][1]);
+        curve.lineEnd();
+        context.lineWidth = LINEWIDTH;
+        context.strokeStyle = STROKESTYLE;
+        context.stroke();
     }
 
     // context.canvas.value = strokes;
@@ -256,6 +308,8 @@ function clear_canvas() {
     aiguess = []
     strokes = []
     hint = []
+    hintneg = []
+    hintpos = []
     // Clear and Rerender
     document.querySelector('.line-chart>g:first-child').innerHTML = '';
     window.linechart.render();
@@ -398,8 +452,8 @@ function showModal() {
 
     if (best_aiscore > best_userscore){
         // change modal style
-        header.style.backgroundColor = "red"
-        footer.style.backgroundColor = "red"
+        header.style.backgroundColor = "#C41313"
+        footer.style.backgroundColor = "#C41313"
         let iphrase = Math.floor(Math.random()*loose_sentence.length)
         body.innerHTML = loose_sentence[iphrase]
         modal.style.display = "block";

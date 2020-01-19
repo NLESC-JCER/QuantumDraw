@@ -65,11 +65,22 @@ class SocketHandler(websocket.WebSocketHandler):
 
         if decoded_message['type'] == 'guess':
             data = decoded_message['data']
+
+            # send the score and hint data
+            # hint, pos, neg, score = get_user_score(data, self.current_level_potential)
+            # self.write_message(json.dumps({'type': 'user_score', 
+            #                                'score': score, 
+            #                                'points' : hint,
+            #                                'pos_points': pos,
+            #                                'neg_points': neg}))
+
+            # send the score and hint data
             hint, score = get_user_score(data, self.current_level_potential)
             self.write_message(json.dumps({'type': 'user_score', 'score': score, 'points': hint}))
 
+            # # send only the score
             # score = get_user_score(data, self.current_level_potential)
-            #self.write_message(json.dumps({'type': 'user_score', 'score': score}))
+            # self.write_message(json.dumps({'type': 'user_score', 'score': score}))
             
 
             async def loop():
