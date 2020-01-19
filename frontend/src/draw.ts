@@ -23,6 +23,7 @@ let userGuessAttemptNumber = 0;
 let userscore = 0;
 let aiscore = 0;
 let showai = true;
+let showhint = true;
 
 let best_userscore = 0;
 let best_aiscore = 0;
@@ -43,6 +44,9 @@ const ORILINEWIDTH = 5;
 
 const AISTYLE = "#3366ff";
 const AILINEWIDTH = 2
+
+const HINTSTYLE = "#555555";
+const HINTLINEWIDTH = 1
 
 canvas = document.createElement('canvas');
 canvas.width = WIDTH;
@@ -65,10 +69,14 @@ toggle_ai_button.addEventListener('click', () => toggle_ai())
 let toggle_ai_speed_button: HTMLElement = document.getElementById('toggle_ai_speed_button');
 toggle_ai_speed_button.addEventListener('click', () => toggle_ai_speed())
 
+let toggle_hint_button: HTMLElement = document.getElementById('toggle_hint_button');
+toggle_hint_button.addEventListener('click', () => toggle_hint())
+
 const strokes = [];
 let potential = [];
 let origin = [];
 let aiguess = [];
+let hint = [];
 
 let linechartData = {
     datasets: [{
@@ -137,6 +145,21 @@ function render() {
             curve.lineEnd();
             context.lineWidth = AILINEWIDTH;
             context.strokeStyle = AISTYLE;
+            context.stroke();
+        }
+    }
+
+    if (showhint) {
+        for (const hintStroke of hint) {
+            context.beginPath();
+            curve.lineStart();
+            for (const point of hintStroke) {
+                curve.point(x(point[0]), y(point[1]));
+            }
+            if (hintStroke.length === 1) curve.point(hintStroke[0][0], hintStroke[0][1]);
+            curve.lineEnd();
+            context.lineWidth = HINTLINEWIDTH;
+            context.strokeStyle = HINTSTYLE;
             context.stroke();
         }
     }
@@ -232,6 +255,7 @@ function clear_canvas() {
     window.linechart.data = linechartData;
     aiguess = []
     strokes = []
+    hint = []
     // Clear and Rerender
     document.querySelector('.line-chart>g:first-child').innerHTML = '';
     window.linechart.render();
@@ -241,6 +265,11 @@ function clear_canvas() {
 
 function toggle_ai() {
     showai = !showai
+    render()
+}
+
+function toggle_hint() {
+    showhint = !showhint
     render()
 }
 
@@ -282,8 +311,7 @@ function updateUserScore(time: number, value: number) {
     // Clear and Rerender
     document.querySelector('.line-chart>g:first-child').innerHTML = '';
     window.linechart.render();
-
-
+    
 }
 
 function updateAIScore(time: number, value: number) {
@@ -330,6 +358,9 @@ socket.addEventListener('message', function (event) {
 
     } else if (eventType === 'user_score') {
         updateUserScore(time, parsedData.score);
+        hint = [parsedData.points]
+        render();
+
     } else if (eventType === 'game_over') {
         showai = true;
         render();

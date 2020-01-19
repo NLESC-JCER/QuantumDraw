@@ -20,8 +20,11 @@ def get_user_score(user_guess, current_pot):
                          step_size=0.5, domain=domain)
 
     usolver = UserSolver(wf=uwf, sampler=sampler)
-
-    return usolver.get_score()
+    data = usolver.feedback()
+    points = list(zip(data['x'],data['y']))
+    
+    return points, usolver.get_score()
+    #return usolver.get_score()
 
 
 def get_ai_score(current_pot, max_iterations=100, duration=1):

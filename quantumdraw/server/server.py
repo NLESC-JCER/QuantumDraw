@@ -65,8 +65,12 @@ class SocketHandler(websocket.WebSocketHandler):
 
         if decoded_message['type'] == 'guess':
             data = decoded_message['data']
-            score = get_user_score(data, self.current_level_potential)
-            self.write_message(json.dumps({'type': 'user_score', 'score': score}))
+            hint, score = get_user_score(data, self.current_level_potential)
+            self.write_message(json.dumps({'type': 'user_score', 'score': score, 'points': hint}))
+
+            # score = get_user_score(data, self.current_level_potential)
+            #self.write_message(json.dumps({'type': 'user_score', 'score': score}))
+            
 
             async def loop():
                 iterator = get_ai_score(self.current_level_potential)

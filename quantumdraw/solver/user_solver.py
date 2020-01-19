@@ -21,15 +21,17 @@ class UserSolver(Solver):
         yuser_scale /= np.max(yuser_scale)
         yuser_scale *= self.solution['max']
 
-
         delta = (self.solution['y']-yuser_scale)
+        
+        # thr = 0.15
+        # delta[delta>thr] = thr
+        # delta[delta<-thr] = -thr
+        
         dmax = np.max(np.abs(delta))
-        print(dmax)
-        if dmax > 0.25:
-            delta /= dmax
-        scale = 1
-
-        return {'x':self.solution['x'],'y': yuser, 'delta' : scale*delta}
+        delta /= dmax
+        scale = 0.15
+        
+        return {'x':self.solution['x'].tolist(), 'y' : (scale * delta).tolist()}
 
 
 
