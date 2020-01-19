@@ -40,7 +40,7 @@ def get_solution(current_pot):
         
     return points
 
-def get_ai_score(current_pot, max_iterations=100, duration=1):
+def get_ai_score(current_pot, max_iterations=100, duration=30):
     sampler = Metropolis(nwalkers=500, nstep=2000,
                          step_size=0.5, domain=domain)
 
