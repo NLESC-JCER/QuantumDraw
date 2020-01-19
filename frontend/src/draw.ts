@@ -93,13 +93,14 @@ let linechartData = {
     }],
 };
 
-
+// the hint filled 
 var area = d3.area().context(context).y0(HEIGHT/2);
 
 (window as any).strokes = strokes;
 const curve = d3.curveBasis(context);
 const redo = [];
 
+// the main function 
 function render() {
     context.clearRect(0, 0, WIDTH, HEIGHT);
 
@@ -118,7 +119,6 @@ function render() {
         }
     }        
     
-
     if (showhint) {
 
         for (const hintStroke of hint) {
