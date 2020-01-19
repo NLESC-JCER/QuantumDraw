@@ -37,7 +37,7 @@ class UserSolver(Solver):
         # dmax = np.max(np.abs(delta))
         # if dmax > 0.05:
         #     delta /= dmax
-        scale = 0.75
+        scale = 1.
         
         return {'x':self.solution['x'].tolist(), 'y' : (scale * delta).tolist()}
 
