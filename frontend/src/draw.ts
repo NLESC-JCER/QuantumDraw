@@ -10,9 +10,9 @@ declare const window: any;
 
 const root = `${window.location.host}${window.location.pathname}`;
 const websocketURL = `wss://${root}ws`;
-// const socket = window.socket = new WebSocket('wss://quantumdraw.ci-nlesc.surf-hosted.nl/ws');
-const socket = window.socket = new WebSocket('ws://localhost:8888/ws');
+const socket = window.socket = new WebSocket('wss://quantumdraw.ci-nlesc.surf-hosted.nl/ws');
 
+// const socket = window.socket = new WebSocket('ws://localhost:8888/ws');
 // const socket = window.socket = new WebSocket(websocketURL);
 
 let canvas: HTMLCanvasElement;
@@ -330,8 +330,15 @@ function toggle_ai_speed() {
 }
 
 window.addEventListener('load', () => {
-    reset();
+    if (socket.readyState === socket.CONNECTING) {
+      socket.onopen = function() {
+        reset();
+      };
+    } else {      
+       reset();
+    }
 });
+
 
 function updateUserScore(time: number, value: number) {
     const userScoreP = d3.select('.userScoreP');
