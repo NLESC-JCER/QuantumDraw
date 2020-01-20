@@ -116,8 +116,8 @@ class NeuralSolver(Solver):
             if plot is not None:
                 plot.drawNow()
 
-            if cumulative_loss < min_loss:
-                min_loss = self.save_checkpoint(n,cumulative_loss,self.save_model)
+            # if cumulative_loss < min_loss:
+            #    min_loss = self.save_checkpoint(n,cumulative_loss,self.save_model)
                  
             # get the observalbes
             self.get_observable(self.obs_dict,pos)
