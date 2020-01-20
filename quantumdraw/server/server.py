@@ -1,6 +1,8 @@
 import json
 import tornado.web
 import asyncio
+import os 
+from pathlib import Path
 
 from typing import Any
 from tornado import websocket, web, ioloop, httputil
@@ -10,7 +12,9 @@ from quantumdraw.server.scores import get_ai_score, get_user_score, get_solution
 
 class IndexHandler(web.RequestHandler):
     def get(self):
-        self.render("index.html")
+        with open(Path(__file__).parent / Path('index.html'), 'r') as f:
+            self.write(f.read())
+#        self.render("index.html")
 
 
 class SocketHandler(websocket.WebSocketHandler):
