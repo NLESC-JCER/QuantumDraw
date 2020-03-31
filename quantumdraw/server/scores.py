@@ -64,11 +64,12 @@ def get_ai_score(current_pot, max_iterations=100, duration=30):
         low_x = -5
         high_x = 5
         x_points = [low_x + sample_num * (high_x - low_x) / num_samples for sample_num in range(0, num_samples)]
-        x = torch.tensor(x_points)
+        x = torch.tensor(x_points).view(-1,1)
         y = solver.wf(x)
         y /= y.max()
         y_points = y.detach().numpy().T[0].tolist()
         points = list(zip(x_points, y_points))
-        yield points, solver.get_score()
+        score = solver.get_score()
+        yield points, score
 
     

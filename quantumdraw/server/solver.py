@@ -52,7 +52,7 @@ class QuantumDrawSolver(SolverBase):
 
         with torch.no_grad():
 
-            ywf = self.wf(torch.tensor(self.solution['x'])).clone().detach().numpy()
+            ywf = self.wf(torch.tensor(self.solution['x']).view(-1,1)).clone().detach().numpy()
             ywf = (ywf/np.max(ywf) * self.solution['max']).flatten()
             return self._score(ywf)
 
