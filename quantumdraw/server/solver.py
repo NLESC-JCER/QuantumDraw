@@ -18,8 +18,10 @@ from schrodinet.solver.solver_potential import SolverPotential
 
 class QuantumDrawSolver(SolverBase):
 
-    def __init__(self, wf=None, sampler=None, optimizer=None,scheduler=None):
-        super(QauntumDrawSolver,self).__init__(wf,sampler,optimizer,scheduler)
+    def __init__(self, wf=None, sampler=None, optimizer=None, scheduler=None):
+        super(QuantumDrawSolver,self).__init__(wf,sampler,optimizer)
+        self.scheduler=scheduler
+        self.task='wf_opt'
 
         # observalbe
         self.observable(['local_energy'])
@@ -37,7 +39,7 @@ class QuantumDrawSolver(SolverBase):
             dict: position and numerical value of the wave function 
         """
 
-        x = torch.linspace(self.wf.domain['xmin'],self.wf.domain['xmax'],npts)
+        x = torch.linspace(self.wf.domain['min'],self.wf.domain['max'],npts)
         dx2 = (x[1]-x[0])**2
         Vx = np.diag(self.wf.nuclear_potential(x).detach().numpy().flatten())
         K = -0.5 / dx2.numpy() * ( np.eye(npts,k=1) + np.eye(npts,k=-1) - 2. * np.eye(npts))
@@ -63,15 +65,16 @@ class NeuralSolver(QuantumDrawSolver, SolverPotential):
 
     def __init__(self,wf=None, sampler=None, optimizer=None,scheduler=None):
         """Solver for the neural network wave function."""
-        QuantumDrawSolver.__init__(wf,sampler,optimizer,scheduler)
-        SolverPotential.__init__(wf,sampler,optimizer,scheduler)
+        
+        SolverPotential.__init__(self,wf,sampler,optimizer,scheduler)
+        QuantumDrawSolver.__init__(self,wf,sampler,optimizer,scheduler)
 
 
 class UserSolver(QuantumDrawSolver):
 
-    def __init__(self,wf=None, sampler=None, optimizer=None,scheduler=None):
+    def __init__(self,wf=None, sampler=None, optimizer=None, scheduler=None):
         """Solver for the user defined wave function."""
-        super(UserSolver,self).__init__(wf,sampler)
+        super(UserSolver,self).__init__(wf, sampler)
         self.interpolate_solution()
 
     def interpolate_solution(self):

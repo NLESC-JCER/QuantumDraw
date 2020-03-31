@@ -3,10 +3,12 @@ from torch import optim
 import numpy as np
 import matplotlib.pyplot as plt
 
-from quantumdraw.sampler.metropolis import  Metropolis
-from quantumdraw.wavefunction.neural_wave_function import NeuralWaveFunction
-from quantumdraw.solver.neural_solver import NeuralSolver
-from quantumdraw.solver.plot_utils import plot_results_1d, plotter1d, plot_wf_1d
+from schrodinet.sampler.metropolis import  Metropolis
+from schrodinet.solver.plot_potential import plot_results_1d, plotter1d, plot_wf_1d
+
+from quantumdraw.server.wavefunction import NeuralWaveFunction
+from quantumdraw.server.solver import NeuralSolver
+
 
 def pot_func(pos):
     '''Potential function desired.'''
@@ -21,11 +23,11 @@ def ho1d_sol(pos):
     return torch.exp(-0.5*pos**2)
 
 # box
-domain, ncenter = {'xmin':-5.,'xmax':5.}, 11
+domain, ncenter = {'min':-5.,'max':5.}, 11
 
 #sampler
 sampler = Metropolis(nwalkers=500, nstep=2000, 
-                     step_size = 1, domain = domain)
+                     step_size = 1, init = domain)
 
 # wavefunction
 wf = NeuralWaveFunction(pot_func,domain,ncenter,fcinit='random',sigma=0.5)

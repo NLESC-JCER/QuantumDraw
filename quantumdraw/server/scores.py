@@ -3,12 +3,9 @@ from torch import optim
 import time
 import numpy as np
 
-from quantumdraw.sampler.metropolis import Metropolis
-from quantumdraw.solver.neural_solver import NeuralSolver
-from quantumdraw.solver.user_solver import UserSolver
-from quantumdraw.wavefunction.neural_wave_function import NeuralWaveFunction
-from quantumdraw.wavefunction.user_wave_function import UserWaveFunction
-
+from schrodinet.sampler.metropolis import Metropolis
+from solver import NeuralSolver, UserSolver
+from wave_function import NeuralWaveFunction, UserWaveFunction
 
 domain = {'xmin': -5., 'xmax': 5.}
 

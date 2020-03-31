@@ -5,13 +5,17 @@ from torch.autograd import Variable
 import torch.optim as optim
 from torch.utils.data import DataLoader
 
+from scipy import interpolate
+
 from types import SimpleNamespace
 import inspect
 
-from quantumdraw.solver.torch_utils import DataSet, Loss, ZeroOneClipper
-from quantumdraw.solver.solver_base import Solver
 from tqdm import tqdm
 import time
+
+from schrodinet.solver.torch_utils import DataSet, Loss, ZeroOneClipper
+from schrodinet.solver.solver_base import Solver
+
 
 class NeuralSolver(Solver):
 
@@ -152,7 +156,6 @@ class NeuralSolver(Solver):
 
         return pos
 
-
     def check_parameters(self):
 
         check_nan =  torch.isnan(self.wf.rbf.centers.data)
@@ -163,3 +166,42 @@ class NeuralSolver(Solver):
 
         check_nan =  torch.isnan(self.wf.fc.weight.data)
         self.wf.fc.weight.data[check_nan] = 0.
+
+
+class UserSolver(Solver):
+
+    def __init__(self,wf=None, sampler=None, 
+                      optimizer=None,scheduler=None):
+        super(UserSolver,self).__init__(wf,sampler)
+
+        self.interpolate_solution()
+
+    def interpolate_solution(self):
+        self.solinterp = interpolate.interp1d(self.solution['x'],
+                                                self.solution['y'],
+                                                fill_value='extrapolate')
+
+    def feedback(self):
+        """Returns the feedback to the user
+        
+        Returns:
+            dict: x and y value of the feedback curve
+        """
+        yuser = self.wf.finterp(self.solution['x'])
+
+        yuser_scale = np.copy(yuser)
+        yuser_scale /= np.max(yuser_scale)
+        yuser_scale *= self.solution['max']
+
+        delta = (self.solution['y']-yuser_scale)
+        
+        # thr = 0.15
+        # delta[delta>thr] = thr
+        # delta[delta<-thr] = -thr
+        
+        # dmax = np.max(np.abs(delta))
+        # if dmax > 0.05:
+        #     delta /= dmax
+        scale = 1.
+        
+        return {'x':self.solution['x'].tolist(), 'y' : (scale * delta).tolist()}

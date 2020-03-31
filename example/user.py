@@ -1,10 +1,10 @@
 import torch
 import numpy as np
 
-from quantumdraw.sampler.metropolis import  Metropolis
-from quantumdraw.wavefunction.user_wave_function import UserWaveFunction
-from quantumdraw.solver.user_solver import UserSolver
-from quantumdraw.solver.plot_utils import plot_wf_1d
+from schrodinet.sampler.metropolis import  Metropolis
+from quantumdraw.server.wavefunction import UserWaveFunction
+from quantumdraw.server.solver import UserSolver
+
 
 def pot_func(pos):
     '''Potential function desired.'''
@@ -15,7 +15,7 @@ def gen_pts(pos):
     return torch.exp(-0.5*pos**2) #+ 2*torch.exp(-0.75*(pos-2.)**2)
 
 # box
-domain = {'xmin':-5.,'xmax':5.}
+domain = {'min':-5.,'max':5.}
 
 #user wave function
 npts = 501
@@ -26,11 +26,9 @@ uwf = UserWaveFunction(pot_func,domain,xpts=xpts,ypts=ypts)
 
 #sampler
 sampler = Metropolis(nwalkers=100, nstep=100, 
-                     step_size = 0.5, domain = domain)
+                     step_size = 0.5, init = domain)
 
 usolver = UserSolver(wf=uwf, sampler=sampler)
-plot_wf_1d(usolver,domain,51,pot=False,feedback=usolver.feedback())
-pos,e,v = usolver.single_point()
-
+#plot_wf_1d(usolver,domain,51,pot=False,feedback=usolver.feedback())
 score = usolver.get_score()
 print(score)

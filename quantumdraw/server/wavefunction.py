@@ -50,6 +50,7 @@ class NeuralWaveFunction(Potential):
         """neural network RBF wave function."""
 
         Potential.__init__(self,fpot, domain, ncenter)
+        self.domain = domain
         self.kinetic_energy = self.kinetic_energy_analytical
 
         self.rbf = RBF(self.ndim_tot, self.ncenter,
@@ -65,9 +66,11 @@ class NeuralWaveFunction(Potential):
 
 class UserWaveFunction(WaveFunction):
 
-    def __init__(self,fpot,domain,xpts=None,ypts=None):
-        super(UserWaveFunction,self).__init__(fpot,domain)
-
+    def __init__(self ,fpot, domain, xpts=None, ypts=None):
+        super(UserWaveFunction,self).__init__(1,1)
+        self.user_potential = fpot
+        self.domain = domain
+        
         # book the potential function
         self.load_data(xpts,ypts)
         self.get_interp()
@@ -96,10 +99,10 @@ class UserWaveFunction(WaveFunction):
             y (array): y values of the points
         """
         
-        x = np.insert(x,0,1.25*self.domain['xmin'])
+        x = np.insert(x,0,1.25*self.domain['min'])
         y = np.insert(y,0,0)
 
-        x = np.insert(x,len(x),1.25*self.domain['xmax'])
+        x = np.insert(x,len(x),1.25*self.domain['max'])
         y = np.insert(y,len(y),0)
 
         self.data = {'x':[],'y':[]}

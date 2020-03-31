@@ -34,13 +34,13 @@ setup(
         'Intended Audience :: Developers',
         'License :: OSI Approved :: Apache Software License',
         'Natural Language :: English',
-        'intended audience :: science/research',
+        'Intended Audience :: Science/Research',
         'Programming Language :: Python :: 3.7',
         'Topic :: Scientific/Engineering :: Chemistry'
     ],
     test_suite='tests',
     install_requires=['autograd', 'cython', 'matplotlib', 'numpy', 'pyyaml>=5.1',
-                      'schema', 'scipy', 'tqdm','torch'],
+                      'schema', 'scipy', 'tqdm','torch', 'schrodinet'],
     extras_require={
         'dev': ['prospector[with_pyroma]', 'yapf', 'isort'],
         'doc': ['recommonmark', 'sphinx', 'sphinx_rtd_theme'],

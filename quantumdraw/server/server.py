@@ -4,8 +4,8 @@ import asyncio
 
 from typing import Any
 from tornado import websocket, web, ioloop, httputil
-from quantumdraw.server.levels import potentials
-from quantumdraw.server.scores import get_ai_score, get_user_score, get_solution
+from levels import potentials
+from scores import get_ai_score, get_user_score, get_solution
 
 
 class IndexHandler(web.RequestHandler):
