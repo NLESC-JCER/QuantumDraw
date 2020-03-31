@@ -4,10 +4,10 @@ import time
 import numpy as np
 
 from schrodinet.sampler.metropolis import Metropolis
-from solver import NeuralSolver, UserSolver
-from wave_function import NeuralWaveFunction, UserWaveFunction
+from quantumdraw.server.solver import NeuralSolver, UserSolver
+from quantumdraw.server.wavefunction import NeuralWaveFunction, UserWaveFunction
 
-domain = {'xmin': -5., 'xmax': 5.}
+domain = {'min': -5., 'max': 5.}
 
 
 def get_user_score(user_guess, current_pot):
@@ -15,7 +15,7 @@ def get_user_score(user_guess, current_pot):
 
     # sampler
     sampler = Metropolis(nwalkers=100, nstep=100,
-                         step_size=0.5, domain=domain)
+                         step_size=0.5, init=domain)
 
     usolver = UserSolver(wf=uwf, sampler=sampler)
     data = usolver.feedback()
@@ -28,7 +28,7 @@ def get_solution(current_pot):
 
     # sampler
     sampler = Metropolis(nwalkers=100, nstep=100,
-                         step_size=0.5, domain=domain)
+                         step_size=0.5, init=domain)
 
     usolver = UserSolver(wf=uwf, sampler=sampler)
     data = usolver.get_solution()
@@ -39,7 +39,7 @@ def get_solution(current_pot):
 
 def get_ai_score(current_pot, max_iterations=100, duration=30):
     sampler = Metropolis(nwalkers=500, nstep=2000,
-                         step_size=0.5, domain=domain)
+                         step_size=0.5, init=domain)
 
     # wavefunction
     wf = NeuralWaveFunction(current_pot, domain, 11, fcinit='random', sigma=0.5)
