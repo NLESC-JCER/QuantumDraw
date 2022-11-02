@@ -40,7 +40,7 @@ setup(
     ],
     test_suite='tests',
     install_requires=['autograd', 'cython', 'matplotlib', 'numpy', 'pyyaml>=5.1',
-                      'schema', 'scipy', 'tqdm','torch'],
+                      'schema', 'scipy', 'tqdm', 'torch'],
     extras_require={
         'dev': ['prospector[with_pyroma]', 'yapf', 'isort'],
         'doc': ['recommonmark', 'sphinx', 'sphinx_rtd_theme'],
