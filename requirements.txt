@@ -2,5 +2,5 @@ numpy
 cython
 scipy
 autograd
-pyhmc
+# pyhmc
 tornado
