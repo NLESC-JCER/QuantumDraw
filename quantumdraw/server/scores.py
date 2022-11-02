@@ -8,7 +8,8 @@ from quantumdraw.solver.neural_solver import NeuralSolver
 from quantumdraw.solver.user_solver import UserSolver
 from quantumdraw.wavefunction.neural_wave_function import NeuralWaveFunction
 from quantumdraw.wavefunction.user_wave_function import UserWaveFunction
-
+from quantumdraw.wavefunction.multiqubits_wavefunction import MultiQBitWaveFunction
+from qiskit.circuit.library import RealAmplitudes, TwoLocal, PauliTwoDesign, EfficientSU2
 
 domain = {'xmin': -5., 'xmax': 5.}
 
@@ -74,4 +75,7 @@ def get_ai_score(current_pot, max_iterations=100, duration=30):
         points = list(zip(x_points, y_points))
         yield points, solver.get_score()
 
+def get_quantum_ai_score(current_pot, max_iterations=100, duration=30):
+
+    wf = MultiQBitWaveFunction()
     
