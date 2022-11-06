@@ -15,6 +15,21 @@ class UserSolver(Solver):
         self.solinterp = interpolate.interp1d(self.solution['x'],
                                                 self.solution['y'],
                                                 fill_value='extrapolate')
+    def get_score(self):
+        
+        with torch.no_grad():
+
+            ywf = self.wf.data['y'][1:-1]
+            ywf = ( ywf/np.max(ywf) * self.solution['max']).flatten()
+
+            ysol = self.solinterp(self.wf.data['x'][1:-1])
+            fill_factor = (self.wf.data['x'][-2]-self.wf.data['x'][1])/10
+            return fill_factor*self._score(ywf, ysol)
+
+    def _score(self,yvals, ysol):
+    
+        d = np.sqrt(np.sum((ysol-yvals)**2))
+        return np.exp(-d)
 
     def feedback(self):
         """Returns the feedback to the user

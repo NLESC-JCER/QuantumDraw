@@ -1,4 +1,3 @@
-from multiprocessing.sharedctypes import Value
 import torch
 from torch import nn
 import numpy as np
@@ -23,6 +22,7 @@ from qiskit.circuit.register import Register
 from qiskit.circuit.bit import Bit
 from qiskit.quantum_info.operators import Operator
 import numpy as np
+from copy import deepcopy
 
 from qiskit.opflow import (
     Z,
@@ -32,6 +32,7 @@ from qiskit.opflow import (
     OperatorBase,
     TensoredOp,
     ExpectationBase,
+    OperatorStateFn,
     CircuitSampler,
     ListOp,
     ExpectationFactory,
@@ -42,9 +43,14 @@ from qiskit.algorithms.minimum_eigen_solvers.vqe import (
     _validate_initial_point,
 )
 
-from qiskit.algorithms.optimizers import COBYLA
+from qiskit.algorithms.optimizers import COBYLA, ADAM,CG
 import numpy as np
+from qiskit.converters import circuit_to_dag, dag_to_circuit
+from qiskit.circuit.library import CXGate, UGate,U3Gate 
 
+from qiskit import QuantumRegister
+from qiskit.circuit import ParameterVector 
+from qiskit.dagcircuit import DAGCircuit 
 
 class ShiftOperator(QuantumCircuit):
 
@@ -72,17 +78,69 @@ class ShiftOperator(QuantumCircuit):
                 self.mct(self.qreg[:i], self.qreg[i], qreg_shift_ancilla, mode='v-chain')
             self.x(self.qreg[0])
 
+
+def GaussianAnsatz(num_qubits, domain, ipot=0, parameters='replace'):
+
+    x = np.linspace(domain['xmin'],domain['xmax'],2**num_qubits)
+   
+    if ipot == 0:
+        y = np.exp(-1./2*x**2).astype('float64')
+    elif ipot == 1:
+        x = x + 2
+        y = np.exp(-np.exp(-x)-0.5*x)
+    elif ipot == 2:
+        y = np.exp(-np.abs(x-2.5)) + np.exp(-np.abs(x+2.5))
+
+    # y = np.sqrt(y)
+    y = y / np.linalg.norm(y)
+
+    q = QuantumRegister(num_qubits,'q')
+    qc = QuantumCircuit(q)
+    qc.prepare_state(y)
+
+    if parameters=='replace':
+        dag = circuit_to_dag(qc.decompose(reps=10))
+
+        P = ParameterVector('P',num_qubits)
+
+
+        k = 0
+        for i, node in enumerate(dag.topological_op_nodes()):
+
+            if isinstance(node.op, (UGate,U3Gate)):
+                
+                _qc = QuantumCircuit(1)
+                _qc.u(P[k],0,0,0)
+                mini_dag = circuit_to_dag(_qc)
+                dag.substitute_node_with_dag(node, mini_dag)
+                k += 1
+            if k == num_qubits:
+                break
+        return dag_to_circuit(dag)
+
+    elif parameters=='add':
+        dag = circuit_to_dag(qc.decompose(reps=10))
+        P = ParameterVector('P',num_qubits)
+        
+        for i in range(num_qubits):
+            dag.apply_operation_front(UGate(P[i],0,0), qargs=[q[i]])
+        return dag_to_circuit(dag)
+    else:
+
+        return qc
+
 class MultiQBitWaveFunction(WaveFunction):
 
-    def __init__(self, fpot, ansatz, domain, num_shots=1000):
+    def __init__(self, fpot, ansatz, domain, ipot, backend=Aer.get_backend('aer_simulator'), num_shots=100):
 
         self.domain = domain
-        self.xvect = torch.linspace(domain['min'], domain['max'],2**ansatz.num_qubits)
-        self.dx = self.xvect[1]-self.xvect[0]
+        self.xvect = torch.linspace(domain['xmin'], domain['xmax'],2**ansatz.num_qubits)
+        self.dx = 1./(self.xvect[1]-self.xvect[0])
         self.user_potential = fpot
         self.ansatz = ansatz
-        # self.backend = Aer.get_backend("qasm_simulator")
-        self.backend = Aer.get_backend("statevector_simulator")
+        self.ipot = ipot
+        
+        self.backend = backend
         self.NUM_SHOTS = num_shots
         self.params =  np.random.rand(ansatz.num_parameters)
 
@@ -98,12 +156,15 @@ class MultiQBitWaveFunction(WaveFunction):
         )
         self.initial_point = None
         self.create_potential_observable()
+        self.solution = self.get_solution()
 
+        # Initialize the COBYLA optimizer
+        self.optimizer = COBYLA(maxiter=100, tol=0.0001, callback=None)
 
     def create_observables(self):
         zero_op = (I + Z) / 2
         one_op = (I - Z) / 2
-        observables = {
+        self.observables_dict = {
             "I^(n-1)X" :  TensoredOp((self.ansatz.num_qubits-1) * [I] ) ^ X,
             "Io^(n-1)X":  TensoredOp((self.ansatz.num_qubits-1) * [zero_op] ) ^ X,
             "Io^(n-1)I":  TensoredOp((self.ansatz.num_qubits-1) * [zero_op] ) ^ I,
@@ -112,9 +173,23 @@ class MultiQBitWaveFunction(WaveFunction):
         }
 
         self.observables = [
-            observables["I^(n-1)X"],
-            observables["I^(n-1)X"] + observables["Io^(n-1)X"]
+            self.observables_dict ["I^(n-1)X"],
+            self.observables_dict ["I^(n-1)X"] - self.observables_dict ["Io^(n-1)X"]
             ]
+
+    def get_matrix(self):
+        """Returns the finite difference matrix
+        """
+
+        S = np.real(Operator(ShiftOperator(self.ansatz.num_qubits)).data)
+
+        H1 = np.real(Operator(self.observables_dict ["I^(n-1)X"]).data)
+        H2 = S.T @ H1 @ S
+        H3 = S.T @ (np.real(Operator(self.observables_dict ["Io^(n-1)X"]).data)) @ S
+
+        size = 2**self.ansatz.num_qubits
+        A = -2*np.eye(size) + H1 + H2 - H3
+        return A
 
     def forward(self, x):
         ''' Compute the value of the wave function.
@@ -161,7 +236,7 @@ class MultiQBitWaveFunction(WaveFunction):
 
     def nuclear_potential(self):
 
-        circuits = [ self.ansatz]*len(self.pot_obs)
+        circuits = [self.ansatz]*len(self.pot_obs)
 
         ansatz_params = self.params
         num_parameters = self.ansatz.num_parameters
@@ -186,6 +261,7 @@ class MultiQBitWaveFunction(WaveFunction):
     def kinetic_energy_count(self, count):
 
         wf_val = count.sqrt()
+
         gr = np.gradient(wf_val, self.dx)
         hs = np.gradient(gr,self.dx)
         k = -0.5*count*torch.tensor(hs)/wf_val
@@ -194,7 +270,7 @@ class MultiQBitWaveFunction(WaveFunction):
 
 
     @staticmethod
-    def construct_expectation(parameter, circuit, observable,):
+    def construct_expectation(parameter, circuit, observable):
         # assign param to circuit
         wave_function = circuit.assign_parameters(parameter)
 
@@ -222,10 +298,17 @@ class MultiQBitWaveFunction(WaveFunction):
             )
             out += np.real(sampled_expect_op.eval()[0])
 
-        return -0.5*out
+        return -0.5 * out * (self.dx**2)
 
+    def run(self):
 
-    def run(self, maxiter=5000):
+        def callback_opt(res):
+            print(res)
+            # wfcpy = deepcopy(self)
+            # wfcpy.params = res
+            # counts = wfcpy.sample().detach().numpy().tolist()
+            # points = list(zip(wfcpy.xvect.numpy().tolist(), counts))
+            # return points, wfcpy.get_score()            
 
         def objective_function(params):
 
@@ -233,25 +316,58 @@ class MultiQBitWaveFunction(WaveFunction):
             counts = self.sample()
             v = self.nuclear_potential_count(counts)
             # k = self.kinetic_energy_count(counts)
+            # v = counts * self.user_potential(self.xvect)
             k = self.kinetic_energy()
-            e = k+v
-            print(e)
-            return e  
             
-        # Initialize the COBYLA optimizer
-        optimizer = COBYLA(maxiter=maxiter, tol=0.0001)
-
+            e = k+v
+            print('kinetic: ', k, ' potential: ', v, ' total: ', e)            
+            return e
+            
         # Create the initial parameters (noting that our single qubit variational form has 3 parameters)
-        params = np.random.rand(self.ansatz.num_parameters)
-        ret = optimizer.minimize(fun=objective_function, x0=params)
+        if self.params is None:
+            self.params = np.random.rand(self.ansatz.num_parameters)
+        ret = self.optimizer.minimize(fun=objective_function, x0=self.params)
 
         return ret
+
+    def get_solution(self):
+
+        """Computes the solution using finite difference
+        
+        Args:
+            npts (int, optional): number of discrete points. Defaults to 100.
+
+        Returns:
+            dict: position and numerical value of the wave function 
+        """
+        # npts = len(self.xvect)
+        # x = self.xvect
+        # dx2 = self.dx**2
+        # Vx = np.diag(self.user_potential(self.xvect).detach().numpy().flatten())
+        # K = -0.5 / dx2.numpy() * ( np.eye(npts,k=1) + np.eye(npts,k=-1) - 2. * np.eye(npts))
+        # l, U = np.linalg.eigh(K+Vx)
+        # sol = np.abs(U[:,0])
+        
+
+        x = self.xvect
+
+        if self.ipot == 0:
+            sol = np.exp(-0.5*x**2).numpy().astype('float64')
+        elif self.ipot == 1:
+            x=x+2
+            sol = np.exp(-np.exp(-x)-0.5*x).numpy().astype('float64')
+        elif self.ipot == 2:
+            sol = (np.exp(-np.abs(x-2.5)) + np.exp(-np.abs(x+2.5))).numpy().astype('float64')
+
+        return {'x':x,'y':sol,'max':np.max(sol)}
+        
 
     def get_score(self):
         
         with torch.no_grad():
 
-            ywf = self.wf(torch.tensor(self.solution['x'])).clone().detach().numpy()
+            ywf = self.sample().clone().detach().numpy()
+            ywf = np.sqrt(ywf)
             ywf = (ywf/np.max(ywf) * self.solution['max']).flatten()
             return self._score(ywf)
 

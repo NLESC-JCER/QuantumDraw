@@ -25,14 +25,14 @@ class UserWaveFunction(WaveFunction):
                                                 self.data['y'],
                                                 fill_value='extrapolate')
 
-    def get_spline(self):
-        if self.data['x'] is not None:
-            # self.finterp = interpolate.CubicSpline(self.data['x'],self.data['y'],extrapolate='True')
-            # self.finterp_kin = self.finterp.derivative(nu=2)
+    # def get_spline(self):
+    #     if self.data['x'] is not None:
+    #         # self.finterp = interpolate.CubicSpline(self.data['x'],self.data['y'],extrapolate='True')
+    #         # self.finterp_kin = self.finterp.derivative(nu=2)
 
-            #self.finterp = interpolate.InterpolatedUnivariateSpline(self.data['x'],self.data['y'],k=2)
-            self.finterp = interpolate.UnivariateSpline(self.data['x'],self.data['y'],k=5)
-            self.finterp_kin = self.finterp.derivative(n=2)
+    #         #self.finterp = interpolate.InterpolatedUnivariateSpline(self.data['x'],self.data['y'],k=2)
+    #         self.finterp = interpolate.UnivariateSpline(self.data['x'],self.data['y'],k=5)
+    #         self.finterp_kin = self.finterp.derivative(n=2)
 
     def load_data(self,x,y):
         """load data points in the class
@@ -51,7 +51,7 @@ class UserWaveFunction(WaveFunction):
         self.data = {'x':[],'y':[]}
         self.data['x'] = x
         self.data['y'] = y
-
+        
     def forward(self,pos):
         """Compute the value of the wave function.
         for a multiple conformation of the electrons
